@@ -39,9 +39,10 @@
 /* Reference clock selection pin (GPIO) */
 #define TUNER_TEF668X_PIN_REF_CLOCK 15
 
-/* Versions of included patches */
+/* Versions of tuner patches embedded into firmware
+   Warning: There is no enough space on AVR for all of them at once */
 #define TUNER_TEF668X_PATCH_V101 0
-#define TUNER_TEF668X_PATCH_V102 0
+#define TUNER_TEF668X_PATCH_V102 1
 #define TUNER_TEF668X_PATCH_V205 1
 
 /* FM signal level offset for calibration [dB] */
