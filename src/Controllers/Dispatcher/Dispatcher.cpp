@@ -52,8 +52,8 @@ Dispatcher::getCommands(uint8_t *len)
 {
     static constexpr Command commands[] =
     {
-        { FMDX_RADIO_PROTOCOL_STARTUP, &this->cbStartup },
-        { FMDX_RADIO_PROTOCOL_SHUTDOWN, &this->cbShutdown }
+        { FMDX_TUNER_PROTOCOL_STARTUP, &this->cbStartup },
+        { FMDX_TUNER_PROTOCOL_SHUTDOWN, &this->cbShutdown }
     };
 
     *len = sizeof(commands) / sizeof(Command);
@@ -74,7 +74,7 @@ Dispatcher::await()
     for (;;)
     {
         if (this->read() && 
-            strcmp(buff, FMDX_RADIO_PROTOCOL_STARTUP) == 0)
+            strcmp(buff, FMDX_TUNER_PROTOCOL_STARTUP) == 0)
         {
             this->running = true;
             return;

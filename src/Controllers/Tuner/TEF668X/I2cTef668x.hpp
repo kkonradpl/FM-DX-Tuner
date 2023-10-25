@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_I2C_TEF668X_H
-#define FMDX_RADIO_I2C_TEF668X_H
+#ifndef FMDX_TUNER_I2C_TEF668X_H
+#define FMDX_TUNER_I2C_TEF668X_H
 
 #include "../../../I2c/I2cDriver.hpp"
 

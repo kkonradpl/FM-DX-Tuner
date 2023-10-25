@@ -53,18 +53,18 @@ Tuner::getCommands(uint8_t *len)
 {
     static constexpr Command commands[] =
     {
-        { FMDX_RADIO_PROTOCOL_MODE, &this->cbMode },
-        { FMDX_RADIO_PROTOCOL_TUNE, &this->cbFrequency },
-        { FMDX_RADIO_PROTOCOL_DEEMPHASIS, &this->cbDeemphasis },
-        { FMDX_RADIO_PROTOCOL_AGC, &this->cbAgc },
-        { FMDX_RADIO_PROTOCOL_ALIGNMENT, &this->cbAlignment },
-        { FMDX_RADIO_PROTOCOL_BANDWIDTH, &this->cbBandwidth },
-        { FMDX_RADIO_PROTOCOL_VOLUME, &this->cbVolume },
-        { FMDX_RADIO_PROTOCOL_SQUELCH, &this->cbSquelch },
-        { FMDX_RADIO_PROTOCOL_OUTPUT_MODE, &this->cbOutputMode },
-        { FMDX_RADIO_PROTOCOL_QUALITY, &this->cbQuality },
-        { FMDX_RADIO_PROTOCOL_SCAN, &this->cbScan },
-        { FMDX_RADIO_PROTOCOL_CUSTOM, &this->cbCustom }
+        { FMDX_TUNER_PROTOCOL_MODE, &this->cbMode },
+        { FMDX_TUNER_PROTOCOL_TUNE, &this->cbFrequency },
+        { FMDX_TUNER_PROTOCOL_DEEMPHASIS, &this->cbDeemphasis },
+        { FMDX_TUNER_PROTOCOL_AGC, &this->cbAgc },
+        { FMDX_TUNER_PROTOCOL_ALIGNMENT, &this->cbAlignment },
+        { FMDX_TUNER_PROTOCOL_BANDWIDTH, &this->cbBandwidth },
+        { FMDX_TUNER_PROTOCOL_VOLUME, &this->cbVolume },
+        { FMDX_TUNER_PROTOCOL_SQUELCH, &this->cbSquelch },
+        { FMDX_TUNER_PROTOCOL_OUTPUT_MODE, &this->cbOutputMode },
+        { FMDX_TUNER_PROTOCOL_QUALITY, &this->cbQuality },
+        { FMDX_TUNER_PROTOCOL_SCAN, &this->cbScan },
+        { FMDX_TUNER_PROTOCOL_CUSTOM, &this->cbCustom }
     };
     
     *len = sizeof(commands) / sizeof(Command);
@@ -173,13 +173,13 @@ Tuner::cbMode(Controller *instance,
     if (tuner->driver.setMode(value))
     {
         tuner->clear();
-        tuner->feedback(FMDX_RADIO_PROTOCOL_MODE, value);
+        tuner->feedback(FMDX_TUNER_PROTOCOL_MODE, value);
 
         const uint32_t newFrequency = tuner->driver.getFrequency();
         if (prevFrequency != newFrequency)
         {
             const uint32_t step = tuner->driver.getStep();
-            tuner->feedback2(FMDX_RADIO_PROTOCOL_TUNE, newFrequency, step);
+            tuner->feedback2(FMDX_TUNER_PROTOCOL_TUNE, newFrequency, step);
         }
 
         return true;
@@ -210,10 +210,10 @@ Tuner::cbFrequency(Controller *instance,
         const uint32_t newMode = tuner->driver.getMode();
         if (prevMode != newMode)
         {
-            tuner->feedback(FMDX_RADIO_PROTOCOL_MODE, newMode);
+            tuner->feedback(FMDX_TUNER_PROTOCOL_MODE, newMode);
         }
 
-        tuner->feedback2(FMDX_RADIO_PROTOCOL_TUNE, newFrequency, step);
+        tuner->feedback2(FMDX_TUNER_PROTOCOL_TUNE, newFrequency, step);
         return true;
     }
 
@@ -229,7 +229,7 @@ Tuner::cbDeemphasis(Controller *instance,
 
     if (tuner->driver.setDeemphasis(value))
     {
-        tuner->feedback(FMDX_RADIO_PROTOCOL_DEEMPHASIS, value);
+        tuner->feedback(FMDX_TUNER_PROTOCOL_DEEMPHASIS, value);
         return true;
     }
 
@@ -245,7 +245,7 @@ Tuner::cbAgc(Controller *instance,
 
     if (tuner->driver.setAgc(value))
     {
-        tuner->feedback(FMDX_RADIO_PROTOCOL_AGC, value);
+        tuner->feedback(FMDX_TUNER_PROTOCOL_AGC, value);
         return true;
     }
 
@@ -261,7 +261,7 @@ Tuner::cbAlignment(Controller *instance,
 
     if (tuner->driver.setAlignment(value))
     {
-        tuner->feedback(FMDX_RADIO_PROTOCOL_ALIGNMENT, value);
+        tuner->feedback(FMDX_TUNER_PROTOCOL_ALIGNMENT, value);
         return true;
     }
 
@@ -277,7 +277,7 @@ Tuner::cbBandwidth(Controller *instance,
 
     if (tuner->driver.setBandwidth(value))
     {
-        tuner->feedback(FMDX_RADIO_PROTOCOL_BANDWIDTH, value);
+        tuner->feedback(FMDX_TUNER_PROTOCOL_BANDWIDTH, value);
         return true;
     }
 
@@ -298,7 +298,7 @@ Tuner::cbVolume(Controller *instance,
             tuner->driver.setVolume((uint8_t)value);
         }
 
-        tuner->feedback(FMDX_RADIO_PROTOCOL_VOLUME, value);
+        tuner->feedback(FMDX_TUNER_PROTOCOL_VOLUME, value);
         tuner->volume = value;
         return true;
     }
@@ -314,7 +314,7 @@ Tuner::cbSquelch(Controller *instance,
     const int32_t value = atol(args);
 
     tuner->squelch.setThreshold(value);
-    tuner->feedback(FMDX_RADIO_PROTOCOL_SQUELCH, value);
+    tuner->feedback(FMDX_TUNER_PROTOCOL_SQUELCH, value);
     return false;
 }
 
@@ -327,7 +327,7 @@ Tuner::cbOutputMode(Controller *instance,
 
     if (tuner->driver.setOutputMode(value))
     {
-        tuner->feedback(FMDX_RADIO_PROTOCOL_OUTPUT_MODE, value);
+        tuner->feedback(FMDX_TUNER_PROTOCOL_OUTPUT_MODE, value);
         return true;
     }
 
@@ -344,7 +344,7 @@ Tuner::cbQuality(Controller *instance,
     if (value <= 1000)
     {
         tuner->timerQuality.setInterval(value);
-        tuner->feedback(FMDX_RADIO_PROTOCOL_QUALITY, value);
+        tuner->feedback(FMDX_TUNER_PROTOCOL_QUALITY, value);
         return true;
     }
 
@@ -418,7 +418,7 @@ Tuner::cbCustom(Controller *instance,
 
     if (tuner->driver.setCustom("custom", args))
     {
-        Serial.print(FMDX_RADIO_PROTOCOL_CUSTOM);
+        Serial.print(FMDX_TUNER_PROTOCOL_CUSTOM);
         Serial.print(args);
         Serial.print('\n');
         return true;

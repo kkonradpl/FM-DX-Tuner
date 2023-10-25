@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_ROTATOR_H
-#define FMDX_RADIO_ROTATOR_H
+#ifndef FMDX_TUNER_ROTATOR_H
+#define FMDX_TUNER_ROTATOR_H
 
 #include "../Controller.hpp"
 

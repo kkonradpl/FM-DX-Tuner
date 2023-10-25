@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_UTILS_H
-#define FMDX_RADIO_UTILS_H
+#ifndef FMDX_TUNER_UTILS_H
+#define FMDX_TUNER_UTILS_H
 
 class Utils
 {

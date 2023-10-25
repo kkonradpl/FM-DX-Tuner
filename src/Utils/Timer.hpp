@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_TIMER_H
-#define FMDX_RADIO_TIMER_H
+#ifndef FMDX_TUNER_TIMER_H
+#define FMDX_TUNER_TIMER_H
 
 #include <Arduino.h>
 

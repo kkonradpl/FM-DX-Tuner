@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_I2C_WIRE_H
-#define FMDX_RADIO_I2C_WIRE_H
+#ifndef FMDX_TUNER_I2C_WIRE_H
+#define FMDX_TUNER_I2C_WIRE_H
 
 class I2cWire
 {

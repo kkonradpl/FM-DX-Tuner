@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_RDSGROUPBUFFER_H
-#define FMDX_RADIO_RDSGROUPBUFFER_H
+#ifndef FMDX_TUNER_RDSGROUPBUFFER_H
+#define FMDX_TUNER_RDSGROUPBUFFER_H
 
 class RdsGroupBuffer
 {

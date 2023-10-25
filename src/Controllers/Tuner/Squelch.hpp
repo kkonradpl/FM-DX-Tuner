@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_SQUELCH_H
-#define FMDX_RADIO_SQUELCH_H
+#ifndef FMDX_TUNER_SQUELCH_H
+#define FMDX_TUNER_SQUELCH_H
 
 class Squelch
 {

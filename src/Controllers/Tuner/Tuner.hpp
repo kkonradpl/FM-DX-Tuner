@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_TUNER_H
-#define FMDX_RADIO_TUNER_H
+#ifndef FMDX_TUNER_TUNER_H
+#define FMDX_TUNER_TUNER_H
 
 #include "../Controller.hpp"
 #include "../../Utils/Timer.hpp"

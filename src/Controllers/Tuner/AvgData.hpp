@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_AVG_DATA_H
-#define FMDX_RADIO_AVG_DATA_H
+#ifndef FMDX_TUNER_AVG_DATA_H
+#define FMDX_TUNER_AVG_DATA_H
 
 template <class Type, class AccType, class CountType, CountType Count>
 class AvgData

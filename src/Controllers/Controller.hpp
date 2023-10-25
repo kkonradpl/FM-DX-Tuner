@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_CONTROLLER_H
-#define FMDX_RADIO_CONTROLLER_H
+#ifndef FMDX_TUNER_CONTROLLER_H
+#define FMDX_TUNER_CONTROLLER_H
 
 struct Command;
 

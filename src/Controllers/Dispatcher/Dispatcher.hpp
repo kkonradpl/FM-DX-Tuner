@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_DISPATCHER_H
-#define FMDX_RADIO_DISPATCHER_H
+#ifndef FMDX_TUNER_DISPATCHER_H
+#define FMDX_TUNER_DISPATCHER_H
 
 #include "../Controller.hpp"
 

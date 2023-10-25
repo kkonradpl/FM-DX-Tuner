@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_TEF668X_H
-#define FMDX_RADIO_TEF668X_H
+#ifndef FMDX_TUNER_TEF668X_H
+#define FMDX_TUNER_TEF668X_H
 
 #include "../TunerDriver.hpp"
 #include "../AvgData.hpp"

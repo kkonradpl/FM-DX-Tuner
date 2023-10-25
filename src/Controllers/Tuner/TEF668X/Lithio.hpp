@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_LITHIO_H
-#define FMDX_RADIO_LITHIO_H
+#ifndef FMDX_TUNER_LITHIO_H
+#define FMDX_TUNER_LITHIO_H
 
 #include "../../../../Config.hpp"
 

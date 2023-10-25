@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_I2C_DRIVER_H
-#define FMDX_RADIO_I2C_DRIVER_H
+#ifndef FMDX_TUNER_I2C_DRIVER_H
+#define FMDX_TUNER_I2C_DRIVER_H
 
 #ifdef ARDUINO_ARCH_AVR
 #include "I2cAvr.hpp"

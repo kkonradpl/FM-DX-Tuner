@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_BUTTON_H
-#define FMDX_RADIO_BUTTON_H
+#ifndef FMDX_TUNER_BUTTON_H
+#define FMDX_TUNER_BUTTON_H
 
 #include "../Controller.hpp"
 

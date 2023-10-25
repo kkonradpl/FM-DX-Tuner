@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_TUNERDRIVER_H
-#define FMDX_RADIO_TUNERDRIVER_H
+#ifndef FMDX_TUNER_TUNERDRIVER_H
+#define FMDX_TUNER_TUNERDRIVER_H
 
 #include "../../Protocol.h"
 #include "RdsGroupBuffer.hpp"

@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_CONFIG_H
-#define FMDX_RADIO_CONFIG_H
+#ifndef FMDX_TUNER_CONFIG_H
+#define FMDX_TUNER_CONFIG_H
 
 /* -----------------------------------------------------------------------
    Generic tuner configuration

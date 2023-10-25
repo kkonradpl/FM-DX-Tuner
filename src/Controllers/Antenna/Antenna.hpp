@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_ANTENNA_H
-#define FMDX_RADIO_ANTENNA_H
+#ifndef FMDX_TUNER_ANTENNA_H
+#define FMDX_TUNER_ANTENNA_H
 #include <stdint.h>
 #include "../Controller.hpp"
 #include "../Tuner/Tuner.hpp"

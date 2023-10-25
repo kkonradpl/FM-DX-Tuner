@@ -14,8 +14,8 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_RADIO_RDSPIBUFFER_H
-#define FMDX_RADIO_RDSPIBUFFER_H
+#ifndef FMDX_TUNER_RDSPIBUFFER_H
+#define FMDX_TUNER_RDSPIBUFFER_H
 
 class RdsPiBuffer
 {
