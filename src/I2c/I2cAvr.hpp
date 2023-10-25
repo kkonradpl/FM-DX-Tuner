@@ -16,6 +16,7 @@
 
 #ifndef FMDX_RADIO_I2C_AVR_H
 #define FMDX_RADIO_I2C_AVR_H
+#ifdef ARDUINO_ARCH_AVR
 
 #include "I2cMaster/I2cMaster.h"
 
@@ -41,4 +42,5 @@ private:
     uint8_t readLength;
 };
 
+#endif
 #endif

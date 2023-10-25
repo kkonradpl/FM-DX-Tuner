@@ -18,6 +18,8 @@
 #include "I2cAvr.hpp"
 #include "../Utils/Utils.hpp"
 
+#ifdef ARDUINO_ARCH_AVR
+
 bool
 I2cAvr::busStartWrite()
 {
@@ -63,3 +65,5 @@ I2cAvr::busStop(void)
 {
     bus.stop();
 }
+
+#endif

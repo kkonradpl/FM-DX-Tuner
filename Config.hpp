@@ -34,7 +34,7 @@
  * 9216000 - 9.216 MHz
  * 12000000 - 12.000 MHz
  * 55466670 - 55.46667 MHz */
-#define TUNER_TEF668X_REF_CLOCK 4000000
+#define TUNER_TEF668X_REF_CLOCK 0
 
 /* Reference clock selection pin (GPIO) */
 #define TUNER_TEF668X_PIN_REF_CLOCK 15
@@ -55,8 +55,9 @@
 /* -----------------------------------------------------------------------
    Antenna switch configuration
    ----------------------------------------------------------------------- */
-#define ANTENNA_COUNT  4
-#define ANTENNA_PINS   8, 9, 10, 11
+#define ANTENNA_ENABLED 0
+#define ANTENNA_COUNT   4
+#define ANTENNA_PINS    8, 9, 10, 11
 
 /* Delay of the antenna switch [miliseconds] */
 #define ANTENNA_SWITCH_DELAY 50
@@ -66,6 +67,7 @@
 /* -----------------------------------------------------------------------
    Rotator controller configuration
    ----------------------------------------------------------------------- */
+#define ROTATOR_ENABLED 0
 #define ROTATOR_PIN_CW  6
 #define ROTATOR_PIN_CCW 7
 
@@ -80,6 +82,7 @@
 /* -------------------------------------------------------------------------
    External button configuration
    ----------------------------------------------------------------------- */
+#define BUTTON_ENABLED 0
 #define BUTTON_PIN 13
 
 /* Button debounce time [miliseconds] */

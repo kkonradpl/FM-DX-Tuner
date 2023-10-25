@@ -44,9 +44,15 @@ Antenna antenna(tuner, ANTENNA_PINS);
 Controller *ctrls[] =
 {
     &dispatcher,
+#if BUTTON_ENABLED
     &button,
+#endif
+#if ANTENNA_ENABLED
     &antenna,
+#endif
+#if ROTATOR_ENABLED
     &rotator,
+#endif
     &tuner
 };
 

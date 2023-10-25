@@ -54,7 +54,5 @@ uint8_t const TWI_SCL_PIN = 5;
 uint8_t const TWI_SDA_PIN = 1;
 uint8_t const TWI_SCL_PIN = 0;
 //------------------------------------------------------------------------------
-#else  // AVR CPU
-#error unknown CPU
 #endif  // AVR CPU
 #endif  // TwiMap_h
