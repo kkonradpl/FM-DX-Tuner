@@ -14,52 +14,77 @@
  *  GNU General Public License for more details.
  */
 
-#include <Arduino.h>
+#include <stdint.h>
 #include "Squelch.hpp"
 
-Squelch::State
-Squelch::getState(void)
+
+Squelch::Squelch(uint8_t _timeout)
+    : timeout(_timeout)
 {
-    return (this->countdown == 0 ? Mute : Unmute);
+    this->set(SQUELCH_NONE, 0);
 }
 
-Squelch::State
-Squelch::update(int16_t value)
+Squelch::Action
+Squelch::update(int8_t value)
 {
-    bool exceeded = (value >= this->threshold);
+    bool exceeded;
+    if (this->mode == SQUELCH_CCI)
+    {
+        exceeded = value <= this->threshold;
+    }
+    else
+    {
+        exceeded = value >= this->threshold;
+    }
 
+    Action action = None;
     if (exceeded)
     {
         if (this->countdown == 0)
         {
-            this->countdown = this->timeout;
-            return Unmute;
+            action = Unmute;
         }
 
         this->countdown = this->timeout;
-        return None;
     }
-
-    if (this->countdown)
+    else if (this->countdown)
     {
-        if (--this->countdown == 0)
+        this->countdown--;
+        if (this->countdown == 0)
         {
-            return Mute;
+            action = Mute;
         }
     }
 
-    return None;
+    return action;
 }
-
 
 void
-Squelch::setThreshold(uint8_t _threshold)
+Squelch::set(SquelchMode _mode,
+             int8_t      _threshold)
 {
+    this->mode = _mode;
     this->threshold = _threshold;
+    if (this->mode == SQUELCH_NONE)
+    {
+        this->countdown = this->timeout;
+    }
 }
 
-uint8_t
-Squelch::getThreshold()
+SquelchMode
+Squelch::getMode(void)
+{
+    return this->mode;
+}
+
+int8_t
+Squelch::getThreshold(void)
 {
     return this->threshold;
+}
+
+bool
+Squelch::isMuted(void)
+{
+    return (this->countdown == 0);
 }

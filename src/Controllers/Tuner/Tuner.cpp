@@ -116,11 +116,7 @@ Tuner::handleQuality()
         Serial.print((stereo)?'S':'M');
     }
 
-    /* [dBf] = [dBµV] - 10 * log10(75) + 30 
-       [dBf] = [dBµV] + 11.25 */
-       
-    constexpr int16_t dbfOffset = 1125;
-    Utils::serialDecimal(rssi + dbfOffset, 2);
+    Utils::serialDecimal(rssi, 2);
 
     Serial.print(',');
     Serial.print(cci, DEC);
@@ -158,8 +154,37 @@ Tuner::handleRds()
 void
 Tuner::handleSquelch()
 {
+    constexpr TunerDriver::QualityMode qualityMode = TunerDriver::QUALITY_DEFAULT;
 
-    //this->squelch.update();
+    int8_t value;
+    switch (this->squelch.getMode())
+    {
+        case SquelchMode::SQUELCH_RSSI:
+            value = (int8_t)(this->driver.getQualityRssi(qualityMode) / 100);
+            break;
+
+        case SquelchMode::SQUELCH_STEREO:
+            value = (int8_t)this->driver.getQualityStereo(qualityMode);
+            break;
+
+        case SquelchMode::SQUELCH_CCI:
+            value = (int8_t)(this->driver.getQualityCci(qualityMode));
+            break;
+
+        default:
+            return;
+    }
+
+    switch (this->squelch.update(value))
+    {
+        case Squelch::Mute:
+            this->driver.setVolume(0);
+            break;
+
+        case Squelch::Unmute:
+            this->driver.setVolume(this->volume);
+            break;
+    }
 }
 
 bool
@@ -293,7 +318,7 @@ Tuner::cbVolume(Controller *instance,
     
     if (value <= 100)
     {
-        if (tuner->squelch.getState() != Squelch::Mute)
+        if (!tuner->squelch.isMuted())
         {
             tuner->driver.setVolume((uint8_t)value);
         }
@@ -313,9 +338,25 @@ Tuner::cbSquelch(Controller *instance,
     Tuner *tuner = (Tuner*)instance;
     const int32_t value = atol(args);
 
-    tuner->squelch.setThreshold(value);
+    if (value < 0)
+    {
+        tuner->squelch.set(SQUELCH_STEREO, 1);
+    }
+    else if (value == 0)
+    {
+        if (tuner->squelch.isMuted())
+        {
+            tuner->driver.setVolume(tuner->volume);
+        }
+        tuner->squelch.set(SQUELCH_NONE, 0);
+    }
+    else
+    {
+        tuner->squelch.set(SQUELCH_RSSI, value);
+    }
+
     tuner->feedback(FMDX_TUNER_PROTOCOL_SQUELCH, value);
-    return false;
+    return true;
 }
 
 bool
@@ -369,10 +410,12 @@ Tuner::cbScan(Controller *instance,
     const uint32_t prevBandwidth = tuner->driver.getBandwidth();
 
     if (tuner->volume &&
-        tuner->squelch.getState() != Squelch::Mute)
+        !tuner->squelch.isMuted())
     {
         tuner->driver.setVolume(0);
     }
+
+    bool first = true;
 
     do
     {
@@ -382,9 +425,10 @@ Tuner::cbScan(Controller *instance,
         {
             tuner->driver.setFrequency(freq, TunerDriver::TUNE_SCAN);
 
-            if (freq == start)
+            if (first)
             {
                 tuner->driver.setBandwidth(bandwidth);
+                first = false;
             }
 
             Serial.print(tuner->driver.getFrequency(), DEC);
@@ -401,9 +445,9 @@ Tuner::cbScan(Controller *instance,
     tuner->driver.setBandwidth(prevBandwidth);
     tuner->clear();
 
-    if (tuner->squelch.getState() != Squelch::Mute)
+    if (tuner->volume &&
+        !tuner->squelch.isMuted())
     {
-        /* Unmute */
         tuner->driver.setVolume(tuner->volume);
     }
 

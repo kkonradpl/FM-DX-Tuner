@@ -17,30 +17,29 @@
 #ifndef FMDX_TUNER_SQUELCH_H
 #define FMDX_TUNER_SQUELCH_H
 
+#include "../../Protocol.h"
+
 class Squelch
 {
 public:
-    Squelch(uint8_t _timeout) : timeout(_timeout)
-    {
-        this->threshold = 0;
-        this->countdown = timeout;
-    };
+    Squelch(uint8_t _timeout);
 
-    enum State
+    enum Action : uint8_t
     {
         None,
         Mute,
         Unmute
     };
 
-    State getState(void);
-    State update(int16_t value);
-
-    void setThreshold(uint8_t _threshold);
-    uint8_t getThreshold();
+    Action update(int8_t value);
+    void set(SquelchMode _mode, int8_t _threshold);
+    SquelchMode getMode(void);
+    int8_t getThreshold(void);
+    bool isMuted(void);
 
 private:
-    int16_t threshold;
+    SquelchMode mode;
+    int8_t threshold;
     uint8_t countdown;
     uint8_t timeout;
 };

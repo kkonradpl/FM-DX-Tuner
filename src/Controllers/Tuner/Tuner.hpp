@@ -63,13 +63,15 @@ private:
     /* ... */
 
     TunerDriver &driver;
+
     TunerDriver::QualityMode qualityMode = TunerDriver::QUALITY_DEFAULT;
     Timer timerQuality{66};
-    Timer timerSquelch{100};
-    uint8_t volume = 100;
 
-    static const uint8_t squelchTimeout = 3;
+    static const uint8_t squelchTimeout = 5;
     Squelch squelch{squelchTimeout};
+    Timer timerSquelch{50};
+
+    uint8_t volume = 100;
 };
 
 #endif

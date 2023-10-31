@@ -341,7 +341,13 @@ TEF668X::getQualityRssi(QualityMode mode)
 
     const bool fast = (mode == TunerDriver::QUALITY_FAST);
     const int16_t value = fast ? this->rssi.getRaw() : this->rssi.getAvg();
-    return value;
+
+    /* [dBf] = [dBµV] - 10 * log10(75) + 30
+       [dBf] = [dBµV] + 11.25
+       TODO: Use dBµV as main unit */
+    constexpr int16_t dbfOffset = 1125;
+
+    return value + dbfOffset;
 }
 
 int16_t

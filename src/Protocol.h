@@ -53,7 +53,6 @@ enum Mode
     MODE_AM = 1
 };
 
-/* TODO */
 enum SquelchMode
 {
     SQUELCH_NONE = 0,
