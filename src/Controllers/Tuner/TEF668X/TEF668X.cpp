@@ -71,6 +71,13 @@ TEF668X::start()
     {
         i2c.writeConfig(LITHIO_CONFIG);
         i2c.writeConfig(this->fmsi ? LITHIO_CONFIG_FMSI : LITHIO_CONFIG_STEREO);
+
+        i2c.write(MODULE_APPL, APPL_Set_OperationMode, 1, 0);
+        delay(32);
+
+        /* The delay of 16 ms seems to be sufifcent for 6687/V205, but
+           longer delay can improve compability with untested versions. */
+
         return true;
     }
     
