@@ -71,7 +71,7 @@ private:
     uint32_t minVhfFreq = 65000;
     static constexpr uint32_t maxVhfFreq = 108000;
 
-    static const Timer::Interval qualityInterval = 2;
+    static const Timer::Interval qualityInterval = 4;
     Timer timerQuality{qualityInterval};
     AvgData<int16_t, int32_t, uint8_t, 100 / qualityInterval> rssi;
     AvgData<uint16_t, uint32_t, uint8_t, 500 / qualityInterval> cci;
