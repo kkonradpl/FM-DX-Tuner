@@ -22,7 +22,11 @@
 I2cWire::I2cWire(uint8_t _address) : address(_address >> 1)
 {
     Wire.begin();
-    Wire.setClock(400000UL);
+#ifdef ARDUINO_ARCH_ESP32
+    /* Decrease I2C bus inteference */
+    gpio_set_drive_capability((gpio_num_t)21, GPIO_DRIVE_CAP_0);
+    gpio_set_drive_capability((gpio_num_t)22, GPIO_DRIVE_CAP_0);
+#endif
 }
 
 bool
