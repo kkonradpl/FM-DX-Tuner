@@ -257,7 +257,7 @@ const uint8_t LITHIO_CONFIG[] PROGMEM =
     LITHIO_DATA(MODULE_FM, FM_Set_SoftMute_Max, 1, 1, 60),
     LITHIO_DATA(MODULE_FM, FM_Set_HighCut_Time, 1, 100, 200, 10, 80),
     LITHIO_DATA(MODULE_FM, FM_Set_HighCut_Mod, 1, 0, 250, 130, 500),
-    LITHIO_DATA(MODULE_FM, FM_Set_HighCut_Level, 1, 3, 200, 300),
+    LITHIO_DATA(MODULE_FM, FM_Set_HighCut_Level, 1, 1, 40, 100),
     LITHIO_DATA(MODULE_FM, FM_Set_HighCut_Noise, 1, 0, 360, 300),
     LITHIO_DATA(MODULE_FM, FM_Set_HighCut_Mph, 1, 3, 200, 320),
     LITHIO_DATA(MODULE_FM, FM_Set_HighCut_Max, 1, 1, 3000),
