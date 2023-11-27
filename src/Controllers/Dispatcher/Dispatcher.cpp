@@ -22,20 +22,13 @@
 void
 Dispatcher::setup()
 {
-    Serial.begin(SERIAL_PORT_SPEED);
-    while(!Serial);
 }
 
 void
 Dispatcher::hello()
 {
-    /* Clear the serial buffer */
-    while (Serial.available())
-    {
-        Serial.read();
-    }
-
-    Serial.print("\nOK\n");
+    this->stream.flush();
+    this->stream.print("\nOK\n");
 }
 
 void
@@ -91,12 +84,12 @@ Dispatcher::isRunning()
 bool
 Dispatcher::read()
 {
-    if (!stream.available())
+    if (!this->stream.available())
     {
         return false;
     }
 
-    buff[buff_pos] = stream.read();
+    buff[buff_pos] = this->stream.read();
     if(buff[buff_pos] != '\n')
     {
         /* If this command is too long to
@@ -138,9 +131,9 @@ Dispatcher::process()
 
     /*
     if (!ret)
-        Serial.print("ERROR\n");
+        this->stream.print("ERROR\n");
     else
-        Serial.print("OK\n");
+        this->stream.print("OK\n");
     */
 }
 
@@ -168,7 +161,7 @@ Dispatcher::cbStartup(Controller *instance,
     Dispatcher *dispatcher = (Dispatcher*)instance;
     (void)args;    
 
-    Serial.print("\nOK\n");
+    dispatcher->stream.print("\nOK\n");
     return true;
 }
 

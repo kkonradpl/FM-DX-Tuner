@@ -58,6 +58,9 @@ Controller *ctrls[] =
 
 void setup()
 {
+    Serial.begin(SERIAL_PORT_SPEED);
+    while(!Serial);
+
     const size_t count = sizeof(ctrls) / sizeof(ctrls[0]);
     dispatcher.setControllers(ctrls, count);
 }
