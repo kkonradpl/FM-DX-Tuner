@@ -276,7 +276,6 @@ const uint8_t LITHIO_CONFIG[] PROGMEM =
     LITHIO_DATA(MODULE_AM, AM_Set_LevelOffset, 1, (int16_t)(TUNER_TEF668X_AM_LEVEL_OFFSET * 10)),
     
     LITHIO_DATA(MODULE_AUDIO, AUDIO_Set_Volume, 1, 0),
-    LITHIO_DATA(MODULE_AUDIO, AUDIO_Set_Mute, 1, 0),
     0
 };
 

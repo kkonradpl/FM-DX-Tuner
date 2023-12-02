@@ -55,6 +55,7 @@ public:
     virtual bool setOutputMode(OutputMode value) = 0;
     virtual bool setCustom(const char *name, const char *value) = 0;
 
+    virtual bool getQuality() = 0;
     virtual int16_t getQualityRssi(QualityMode mode) = 0;
     virtual int16_t getQualityCci(QualityMode mode) = 0;
     virtual int16_t getQualityAci(QualityMode mode) = 0;
@@ -62,6 +63,8 @@ public:
     virtual int16_t getQualityOffset(QualityMode mode) = 0;
     virtual int16_t getQualityBandwidth(QualityMode mode) = 0;
     virtual bool getQualityStereo(QualityMode mode) = 0;
+
+    virtual const char* getName() = 0;
     
     Mode getMode();
     uint32_t getFrequency();

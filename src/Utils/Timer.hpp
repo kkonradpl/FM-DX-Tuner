@@ -23,16 +23,21 @@ class Timer
 {
 public:
     typedef unsigned long Interval;
-    Timer(Interval _interval) : interval(_interval) {};
 
-    bool check();
-    Interval getInterval(void);
-    void setInterval(Interval _interval);
-    
+    enum Mode : bool
+    {
+        Oneshot = false,
+        Continous = true
+    };
+
+    bool process(Mode mode);
+    void set(Interval value);
+    void unset();
 
 private:
     Interval timer = 0;
     Interval interval;
+    bool enabled = false;
 };
 
 #endif

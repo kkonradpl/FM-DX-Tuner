@@ -40,7 +40,6 @@ TEF668X::start()
     }
 
     this->readVersion();
-    Serial.println(this->tuner);
 
     i2c.writeConfig(LITHIO_RESET);
     delay(5);
@@ -78,9 +77,13 @@ TEF668X::start()
         /* The delay of 16 ms seems to be sufifcent for 6687/V205, but
            longer delay can improve compability with untested versions. */
 
+        timerQuality.set(this->qualityInterval);
+        timerRds.set(this->rdsInterval);
+        timerUnmute.set(0);
+
         return true;
     }
-    
+
     return false;
 }
 
@@ -88,6 +91,9 @@ void
 TEF668X::shutdown()
 {
     i2c.write(MODULE_APPL, APPL_Set_OperationMode, 1, 1);
+    this->timerQuality.unset();
+    this->timerRds.unset();
+    this->timerUnmute.unset();
 }
 
 void
@@ -98,15 +104,20 @@ TEF668X::hello()
 void
 TEF668X::loop()
 {
-    if (this->timerQuality.check())
+    if (this->timerQuality.process(Timer::Continous))
     {
         this->readQuality();
     }
 
     if (mode == MODE_FM &&
-        this->timerRds.check())
+        this->timerRds.process(Timer::Continous))
     {
         this->readRds();
+    }
+
+    if (this->timerUnmute.process(Timer::Oneshot))
+    {
+        i2c.write(MODULE_AUDIO, AUDIO_Set_Mute, 1, 0);
     }
 }
 
@@ -188,13 +199,11 @@ TEF668X::setFrequency(uint32_t  value,
         }
 
         i2c.write(MODULE_FM, FM_Tune_To, 2, modeJump, this->frequency / 10);
-        
-        delay(5);
 
         if (!scanFlag)
         {
-            delay(3);
-            i2c.write(MODULE_AUDIO, AUDIO_Set_Mute, 1, 0);
+            constexpr Timer::Interval unmuteDelay = 8;
+            this->timerUnmute.set(unmuteDelay);
         }
         
         return true;
@@ -221,23 +230,19 @@ TEF668X::setFrequency(uint32_t  value,
 bool
 TEF668X::setBandwidth(uint32_t value)
 {
-    if (this->mode == MODE_FM)
+    if (this->mode != MODE_FM &&
+        this->mode != MODE_AM)
     {
-        const uint16_t mode = (value == 0) ? 1 : 0;
-        i2c.write(MODULE_FM, FM_Set_Bandwidth, 4, mode, value / 100, 100, 100);
-        this->bandwidth = value;
-        return true;
+        return false;
     }
     
-    if (this->mode == MODE_AM)
-    {
-        const uint16_t mode = 0;
-        i2c.write(MODULE_AM, AM_Set_Bandwidth, 4, mode, value / 100, 100, 100);
-        this->bandwidth = value;
-        return true;
-    }
+    const uint8_t module = (this->mode == MODE_FM) ? MODULE_FM : MODULE_AM;
+    const uint8_t command = (this->mode == MODE_FM) ? FM_Set_Bandwidth : AM_Set_Bandwidth;
+    const uint16_t mode = (this->mode == MODE_FM && value == 0) ? 1 : 0;
+    i2c.write(module, command, 4, mode, value / 100, 100, 100);
 
-    return false;
+    this->bandwidth = value;
+    return true;
 }
 
 bool
@@ -338,6 +343,12 @@ TEF668X::setCustom(const char *name,
     return true;
 }
 
+bool
+TEF668X::getQuality()
+{
+    return rssi.isAvailable();
+}
+
 int16_t
 TEF668X::getQualityRssi(QualityMode mode)
 {
@@ -412,6 +423,12 @@ TEF668X::getQualityStereo(QualityMode mode)
     }
 
     return false;
+}
+
+const char*
+TEF668X::getName()
+{
+    return this->tuner;
 }
 
 State

@@ -37,12 +37,15 @@ Tuner::loop()
     this->driver.loop();
     this->handleRds();
 
-    if (timerQuality.check())
+    if (this->driver.getQuality())
     {
-        this->handleQuality();
+        if (timerQuality.process(Timer::Continous))
+        {
+            this->handleQuality();
+        }
     }
     
-    if (timerSquelch.check())
+    if (timerSquelch.process(Timer::Continous))
     {
         this->handleSquelch();
     }
@@ -74,13 +77,27 @@ Tuner::getCommands(uint8_t *len)
 bool
 Tuner::start()
 {
-    return this->driver.start();
+    if (this->driver.start())
+    {
+        constexpr Timer::Interval qualityInterval = 66;
+        this->timerQuality.set(qualityInterval);
+
+        constexpr Timer::Interval squelchInterval = 50;
+        this->timerSquelch.set(squelchInterval);
+
+        return true;
+    }
+
+    return false;
 }
 
 void
 Tuner::shutdown()
 {
     this->driver.shutdown();
+
+    this->timerQuality.unset();
+    this->timerSquelch.unset();
 
 #ifdef ARDUINO_ARCH_AVR
     /* Release SDA and SCL lines used by hardware I2C */
@@ -195,15 +212,16 @@ Tuner::cbMode(Controller *instance,
     const Mode value = (Mode)atol(args);
 
     const uint32_t prevFrequency = tuner->driver.getFrequency();
+    const uint32_t prevStep = tuner->driver.getFrequency();
     if (tuner->driver.setMode(value))
     {
         tuner->clear();
         tuner->feedback(FMDX_TUNER_PROTOCOL_MODE, value);
 
         const uint32_t newFrequency = tuner->driver.getFrequency();
+        const uint32_t step = tuner->driver.getStep();
         if (prevFrequency != newFrequency)
         {
-            const uint32_t step = tuner->driver.getStep();
             tuner->feedback2(FMDX_TUNER_PROTOCOL_TUNE, newFrequency, step);
         }
 
@@ -384,7 +402,7 @@ Tuner::cbQuality(Controller *instance,
 
     if (value <= 1000)
     {
-        tuner->timerQuality.setInterval(value);
+        tuner->timerQuality.set(value);
         tuner->feedback(FMDX_TUNER_PROTOCOL_QUALITY, value);
         return true;
     }

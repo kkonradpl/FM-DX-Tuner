@@ -18,26 +18,39 @@
 #include "Timer.hpp"
 
 bool
-Timer::check()
+Timer::process(Mode mode)
 {
     const Timer::Interval now = millis();
-    if ((now - this->timer) < this->interval)
+
+    if (!this->enabled ||
+        (now - this->timer) < this->interval)
     {
         return false;
     }
 
-    this->timer = now;
+    if (mode == Mode::Oneshot)
+    {
+        this->enabled = false;
+    }
+    else
+    {
+        this->timer = now;
+    }
+
     return true;
 }
 
-Timer::Interval
-Timer::getInterval(void)
+void
+Timer::set(Timer::Interval value)
 {
-    return this->interval;
+    const Timer::Interval now = millis();
+    this->timer = now;
+    this->interval = value;
+    this->enabled = true;
 }
 
 void
-Timer::setInterval(Timer::Interval _interval)
+Timer::unset()
 {
-    this->interval = _interval;
+    this->enabled = false;
 }

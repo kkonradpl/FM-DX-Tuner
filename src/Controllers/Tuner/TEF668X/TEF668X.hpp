@@ -45,6 +45,7 @@ public:
     bool setOutputMode(OutputMode value) override;
     bool setCustom(const char *name, const char *value) override;
 
+    bool getQuality() override;
     int16_t getQualityRssi(QualityMode mode) override;
     int16_t getQualityCci(QualityMode mode) override;
     int16_t getQualityAci(QualityMode mode) override;
@@ -53,6 +54,8 @@ public:
     int16_t getQualityBandwidth(QualityMode mode) override;
     bool getQualityStereo(QualityMode mode) override;
     
+    const char* getName() override;
+
 private:
     State readState();
     void readVersion();
@@ -71,13 +74,14 @@ private:
     uint32_t minVhfFreq = 65000;
     static constexpr uint32_t maxVhfFreq = 108000;
 
-    static const Timer::Interval qualityInterval = 4;
-    Timer timerQuality{qualityInterval};
+    static constexpr Timer::Interval rdsInterval = 87 / 2;
+    static constexpr Timer::Interval qualityInterval = 4;
     AvgData<int16_t, int32_t, uint8_t, 100 / qualityInterval> rssi;
     AvgData<uint16_t, uint32_t, uint8_t, 500 / qualityInterval> cci;
 
-    static const Timer::Interval rdsInterval = 87 / 2;
-    Timer timerRds{rdsInterval};
+    Timer timerQuality;
+    Timer timerRds;
+    Timer timerUnmute;
 };
 
 #endif
