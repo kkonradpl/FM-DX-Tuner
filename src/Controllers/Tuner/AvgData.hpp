@@ -36,7 +36,7 @@ public:
     void
     add(Type value)
     {
-        this->pos = (this->pos + 1) % Count;
+        this->pos = (CountType)(this->pos + 1) % Count;
         this->data[this->pos] = value;
 
         if (this->fill < Count)
@@ -65,7 +65,6 @@ public:
         {
             total += this->data[i];
         }
-
         return total / this->fill;
     }
 

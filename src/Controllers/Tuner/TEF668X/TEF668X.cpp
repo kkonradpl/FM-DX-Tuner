@@ -524,7 +524,9 @@ TEF668X::readQuality()
              (uint16_t*)&data);
     
     const uint16_t timestamp = data.status & 0x1FF;
-    if (timestamp != 0)
+
+    /* Wait 2.0 ms after tuning */
+    if (timestamp >= 20)
     {
         this->rssi.add(data.level * 10);
         this->cci.add(data.coChannel);
