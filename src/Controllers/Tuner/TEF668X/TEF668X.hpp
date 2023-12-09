@@ -57,6 +57,9 @@ public:
     const char* getName() override;
 
 private:
+    void setFrequencyFM(uint32_t value, TuneFlags flags);
+    void setFrequencyAM(uint32_t value, TuneFlags flags);
+
     State readState();
     void readVersion();
     void readQuality();
@@ -68,6 +71,7 @@ private:
     char tuner[16];
     uint16_t version = 0;
     bool fmsi = false;
+    uint8_t qualityDelay;
 
     static constexpr uint32_t minHfFreq = 144;
     static constexpr uint32_t maxHfFreq = 27000;

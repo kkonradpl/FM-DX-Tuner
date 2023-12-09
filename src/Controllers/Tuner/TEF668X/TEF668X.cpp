@@ -93,6 +93,7 @@ TEF668X::shutdown()
     i2c.write(MODULE_APPL, APPL_Set_OperationMode, 1, 1);
     this->timerQuality.unset();
     this->timerRds.unset();
+    this->timerMute.unset();
     this->timerUnmute.unset();
 }
 
@@ -113,6 +114,11 @@ TEF668X::loop()
         this->timerRds.process(Timer::Continous))
     {
         this->readRds();
+    }
+
+    if (this->timerMute.process(Timer::Oneshot))
+    {
+        i2c.write(MODULE_AUDIO, AUDIO_Set_Mute, 1, 1);
     }
 
     if (this->timerUnmute.process(Timer::Oneshot))
@@ -145,24 +151,14 @@ TEF668X::setMode(Mode value)
     switch (value)
     {
         case MODE_FM:
-            if (this->frequency < this->minVhfFreq ||
-                this->frequency > this->maxVhfFreq)
-            {
-                this->frequency = this->minVhfFreq;
-            }
-
             this->step = 10;
+            this->frequency = constrain(this->frequency, this->minVhfFreq, this->maxVhfFreq);
             i2c.write(MODULE_FM, FM_Tune_To, 2, modePreset, this->frequency / 10);
             break;
 
         case MODE_AM:
-            if (this->frequency < this->minHfFreq ||
-                this->frequency > this->maxHfFreq)
-            {
-                this->frequency = this->minHfFreq;
-            }
-
             this->step = 1;
+            this->frequency = constrain(this->frequency, this->minHfFreq, this->maxHfFreq);
             i2c.write(MODULE_AM, AM_Tune_To, 2, modePreset, this->frequency);
             break;
 
@@ -171,56 +167,71 @@ TEF668X::setMode(Mode value)
     }
 
     this->mode = value;
+    this->qualityDelay = 32;
     return true;
+}
+
+void
+TEF668X::setFrequencyFM(uint32_t  value,
+                        TuneFlags flags)
+{
+    this->frequency = value / 10 * 10;
+
+    if (this->mode != MODE_FM)
+    {
+        /* The frequency will be set together with mode */
+        this->setMode(MODE_FM);
+        return;
+    }
+
+    /* Use Jump instead of Preset mode for shorter mute */
+    constexpr uint16_t modeJump = 4;
+    i2c.write(MODULE_FM, FM_Tune_To, 2, modeJump, this->frequency / 10);
+
+    if ((flags & TUNE_SCAN) == 0)
+    {
+        constexpr Timer::Interval muteDelay = 3;
+        this->timerMute.set(muteDelay);
+        constexpr Timer::Interval unmuteDelay = 7;
+        this->timerUnmute.set(unmuteDelay);
+    }
+
+    this->qualityDelay = 2;
+}
+
+void
+TEF668X::setFrequencyAM(uint32_t  value,
+                        TuneFlags flags)
+{
+    this->frequency = value;
+
+    if (this->mode != MODE_AM)
+    {
+        /* The frequency will be set together with mode */
+        this->setMode(MODE_AM);
+        return;
+    }
+
+    constexpr uint16_t modePreset = 1;
+    i2c.write(MODULE_AM, AM_Tune_To, 2, modePreset, this->frequency);
+    this->qualityDelay = 2;
 }
 
 bool
 TEF668X::setFrequency(uint32_t  value,
                       TuneFlags flags)
 {
-    constexpr uint16_t modePreset = 1;
-    constexpr uint16_t modeJump = 4;
-    const bool scanFlag = flags & TUNE_SCAN;
-
     if (value >= this->minVhfFreq &&
         value <= this->maxVhfFreq)
     {
-        this->frequency = value / 10 * 10;
-
-        if (this->mode != MODE_FM)
-        {
-            this->setMode(MODE_FM);
-            return true;
-        }
-        
-        if (!scanFlag)
-        {
-            i2c.write(MODULE_AUDIO, AUDIO_Set_Mute, 1, 1);
-        }
-
-        i2c.write(MODULE_FM, FM_Tune_To, 2, modeJump, this->frequency / 10);
-
-        if (!scanFlag)
-        {
-            constexpr Timer::Interval unmuteDelay = 8;
-            this->timerUnmute.set(unmuteDelay);
-        }
-        
+        this->setFrequencyFM(value, flags);
         return true;
     }
 
     if (value >= this->minHfFreq &&
         value <= this->maxHfFreq)
     {
-        this->frequency = value;
-
-        if (this->mode != MODE_AM)
-        {
-            this->setMode(MODE_AM);
-            return true;
-        }
-        
-        i2c.write(MODULE_AM, AM_Tune_To, 2, modePreset, this->frequency);
+        this->setFrequencyAM(value, flags);
         return true;
     }
 
@@ -523,10 +534,15 @@ TEF668X::readQuality()
              sizeof(QualityData) / sizeof(uint16_t),
              (uint16_t*)&data);
     
-    const uint16_t timestamp = data.status & 0x1FF;
+    if (data.status == 0xFFFA)
+    {
+        /* Invalid state */
+        return;
+    }
 
-    /* Wait 2.0 ms after tuning */
-    if (timestamp >= 20)
+    const uint16_t timestamp = data.status & 0x1FF;
+    const uint16_t delay = (uint16_t)this->qualityDelay * 10;
+    if (timestamp >= delay)
     {
         this->rssi.add(data.level * 10);
         this->cci.add(data.coChannel);
