@@ -18,7 +18,9 @@ jobs:
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v1.1.2
 
+      - name: Create work directory
         run: |
+          mkdir "$HOME/Arduino"
           ln -s "$PWD" "$HOME/Arduino/FM-DX-Tuner"
       - name: Install platform
         run: |
