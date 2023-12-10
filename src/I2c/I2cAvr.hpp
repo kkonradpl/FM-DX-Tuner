@@ -36,8 +36,10 @@ public:
 
     void busStop(void);
 
-private:
+protected:
     const uint8_t address;
+
+private:
     TwiMaster bus{true};
     uint8_t readLength;
 };

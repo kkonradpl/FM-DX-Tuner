@@ -201,6 +201,9 @@ Tuner::handleSquelch()
         case Squelch::Unmute:
             this->driver.setVolume(this->volume);
             break;
+
+        default:
+            break;
     }
 }
 
@@ -219,10 +222,11 @@ Tuner::cbMode(Controller *instance,
         tuner->feedback(FMDX_TUNER_PROTOCOL_MODE, value);
 
         const uint32_t newFrequency = tuner->driver.getFrequency();
-        const uint32_t step = tuner->driver.getStep();
-        if (prevFrequency != newFrequency)
+        const uint32_t newStep = tuner->driver.getStep();
+        if (prevFrequency != newFrequency ||
+            prevStep != newStep)
         {
-            tuner->feedback2(FMDX_TUNER_PROTOCOL_TUNE, newFrequency, step);
+            tuner->feedback2(FMDX_TUNER_PROTOCOL_TUNE, newFrequency, newStep);
         }
 
         return true;

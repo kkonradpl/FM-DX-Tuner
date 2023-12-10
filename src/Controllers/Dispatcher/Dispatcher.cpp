@@ -112,7 +112,7 @@ Dispatcher::process()
 {
     const char name[] = { buff[0] , '\0'};
     char *args = this->parseArgs();
-    bool ret = 0;
+    bool ret = false;
     
     for (uint8_t i = 0; i < ctrl_len; i++)
     {
@@ -135,6 +135,7 @@ Dispatcher::process()
     else
         this->stream.print("OK\n");
     */
+    (void)ret;
 }
 
 char*

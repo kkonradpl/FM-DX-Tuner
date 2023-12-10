@@ -249,7 +249,7 @@ const uint8_t LITHIO_CONFIG[] PROGMEM =
 {
     LITHIO_DATA(MODULE_FM, FM_Set_NoiseBlanker, 1, 1, 1000, 1000),
     LITHIO_DATA(MODULE_FM, FM_Set_NoiseBlanker_Options, 1, 225, 112, 250, 225),
-    LITHIO_DATA(MODULE_FM, FM_Set_LevelOffset, 1, (int16_t)(TUNER_TEF668X_FM_LEVEL_OFFSET * 10)),
+    LITHIO_DATA(MODULE_FM, FM_Set_LevelOffset, 1, (uint16_t)((int16_t)TUNER_TEF668X_FM_LEVEL_OFFSET * 10)),
     LITHIO_DATA(MODULE_FM, FM_Set_SoftMute_Time, 1, 120, 500, 10, 20),
     LITHIO_DATA(MODULE_FM, FM_Set_SoftMute_Level, 1, 1, 50, 220),
     LITHIO_DATA(MODULE_FM, FM_Set_SoftMute_Noise, 1, 1, 500, 1000),
@@ -273,7 +273,7 @@ const uint8_t LITHIO_CONFIG[] PROGMEM =
     LITHIO_DATA(MODULE_FM, FM_Set_StHiBlend_Max, 1, 1, 4000),
     LITHIO_DATA(MODULE_FM, FM_Set_StHiBlend_Min, 1, 0, 7000),
 
-    LITHIO_DATA(MODULE_AM, AM_Set_LevelOffset, 1, (int16_t)(TUNER_TEF668X_AM_LEVEL_OFFSET * 10)),
+    LITHIO_DATA(MODULE_AM, AM_Set_LevelOffset, 1, (uint16_t)((int16_t)TUNER_TEF668X_AM_LEVEL_OFFSET * 10)),
     
     LITHIO_DATA(MODULE_AUDIO, AUDIO_Set_Volume, 1, 0),
     0

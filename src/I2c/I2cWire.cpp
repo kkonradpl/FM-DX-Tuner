@@ -39,7 +39,7 @@ I2cWire::busStartWrite()
 bool
 I2cWire::busStartRead(uint8_t length)
 {
-    Wire.requestFrom(address, length, true);
+    Wire.requestFrom(address, length, (uint8_t)true);
     return true;
 }
 
@@ -68,7 +68,7 @@ I2cWire::busRestartRead(uint8_t address,
                         uint8_t length)
 {
     Wire.endTransmission(false);
-    Wire.requestFrom(address, length, true);
+    Wire.requestFrom(address, length, (uint8_t)true);
     return true;
 }
 

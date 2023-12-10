@@ -33,7 +33,7 @@ public:
     
     void busStop(void);
 
-private:
+protected:
     const uint8_t address;
 };
 
