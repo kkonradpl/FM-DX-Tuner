@@ -5,10 +5,12 @@ jobs:
   build:
     strategy:
       matrix:
-        arduino-platform: ["arduino:avr"]
+        arduino-platform: ["arduino:avr", "esp32:esp32"]
         include:
           - arduino-platform: "arduino:avr"
             fqbn: "arduino:avr:diecimila"
+          - arduino-platform: "esp32:esp32"
+            fqbn: "esp32:esp32:esp32"
 
     runs-on: ubuntu-latest
     steps:
