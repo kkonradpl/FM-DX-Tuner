@@ -85,6 +85,7 @@ private:
 
     Timer timerQuality;
     Timer timerRds;
+    Timer timerMute;
     Timer timerUnmute;
 };
 
