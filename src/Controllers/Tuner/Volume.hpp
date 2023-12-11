@@ -14,32 +14,27 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_TUNER_SQUELCH_H
-#define FMDX_TUNER_SQUELCH_H
+#ifndef FMDX_TUNER_VOLUME_H
+#define FMDX_TUNER_VOLUME_H
 
-#include "../../Protocol.h"
 #include "TunerDriver.hpp"
-#include "Volume.hpp"
 
-class Squelch
+class Volume
 {
 public:
-    Squelch(Volume &_volume, uint8_t _timeout);
+    Volume(TunerDriver &_driver) : driver(_driver) {};
 
-    void process(int8_t value);
+    void setVolume(uint8_t value);
+    uint8_t getVolume(void);
 
-    void set(SquelchMode _mode, int8_t _threshold);
-    SquelchMode getMode(void);
-    int8_t getThreshold(void);
-
-private:
+    void mute(void);
+    void unMute(void);
     bool isMuted(void);
 
-    Volume &volume;
-    SquelchMode mode;
-    int8_t threshold;
-    uint8_t countdown;
-    uint8_t timeout;
+private:
+    TunerDriver &driver;
+    uint8_t volume = 100;
+    uint8_t muteRefs = 0;
 };
 
 #endif

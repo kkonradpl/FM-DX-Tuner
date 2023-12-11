@@ -20,6 +20,7 @@
 #include "../Controller.hpp"
 #include "../../Utils/Timer.hpp"
 #include "TunerDriver.hpp"
+#include "Volume.hpp"
 #include "Squelch.hpp"
 #include "RdsGroupBuffer.hpp"
 #include "RdsPiBuffer.hpp"
@@ -59,19 +60,15 @@ private:
     void feedback(const char *message, uint32_t value);
     void feedback2(const char *message, uint32_t value, uint32_t value2);
 
-    /* Callbacks for tuner */
-    /* ... */
+    TunerDriver::QualityMode qualityMode = TunerDriver::QUALITY_DEFAULT;
+    static constexpr uint8_t squelchTimeout = 5;
 
     TunerDriver &driver;
+    Volume volume{driver};
+    Squelch squelch{volume, squelchTimeout};
 
-    TunerDriver::QualityMode qualityMode = TunerDriver::QUALITY_DEFAULT;
     Timer timerQuality;
-
-    static const uint8_t squelchTimeout = 5;
-    Squelch squelch{squelchTimeout};
     Timer timerSquelch;
-
-    uint8_t volume = 100;
 };
 
 #endif

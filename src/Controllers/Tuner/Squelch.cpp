@@ -18,16 +18,21 @@
 #include "Squelch.hpp"
 
 
-Squelch::Squelch(uint8_t _timeout)
-    : timeout(_timeout)
+Squelch::Squelch(Volume  &_volume,
+                 uint8_t  _timeout)
+    : volume(_volume)
 {
-    this->set(SQUELCH_NONE, 0);
+    this->timeout = _timeout;
+    this->mode = SQUELCH_NONE;
+    this->threshold = 0;
+    this->countdown = this->timeout;
 }
 
-Squelch::Action
-Squelch::update(int8_t value)
+void
+Squelch::process(int8_t value)
 {
     bool exceeded;
+
     if (this->mode == SQUELCH_CCI)
     {
         exceeded = value <= this->threshold;
@@ -37,26 +42,22 @@ Squelch::update(int8_t value)
         exceeded = value >= this->threshold;
     }
 
-    Action action = None;
     if (exceeded)
     {
-        if (this->countdown == 0)
+        if (this->isMuted())
         {
-            action = Unmute;
+            this->volume.unMute();
         }
 
         this->countdown = this->timeout;
     }
     else if (this->countdown)
     {
-        this->countdown--;
-        if (this->countdown == 0)
+        if (--this->countdown == 0)
         {
-            action = Mute;
+            this->volume.mute();
         }
     }
-
-    return action;
 }
 
 void
@@ -65,8 +66,14 @@ Squelch::set(SquelchMode _mode,
 {
     this->mode = _mode;
     this->threshold = _threshold;
+
     if (this->mode == SQUELCH_NONE)
     {
+        if (this->isMuted())
+        {
+            this->volume.unMute();
+        }
+
         this->countdown = this->timeout;
     }
 }

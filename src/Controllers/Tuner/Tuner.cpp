@@ -192,19 +192,7 @@ Tuner::handleSquelch()
             return;
     }
 
-    switch (this->squelch.update(value))
-    {
-        case Squelch::Mute:
-            this->driver.setVolume(0);
-            break;
-
-        case Squelch::Unmute:
-            this->driver.setVolume(this->volume);
-            break;
-
-        default:
-            break;
-    }
+    this->squelch.process(value);
 }
 
 bool
@@ -340,13 +328,9 @@ Tuner::cbVolume(Controller *instance,
     
     if (value <= 100)
     {
-        if (!tuner->squelch.isMuted())
-        {
-            tuner->driver.setVolume((uint8_t)value);
-        }
+        tuner->volume.setVolume((uint8_t)value);
 
         tuner->feedback(FMDX_TUNER_PROTOCOL_VOLUME, value);
-        tuner->volume = value;
         return true;
     }
     
@@ -366,10 +350,6 @@ Tuner::cbSquelch(Controller *instance,
     }
     else if (value == 0)
     {
-        if (tuner->squelch.isMuted())
-        {
-            tuner->driver.setVolume(tuner->volume);
-        }
         tuner->squelch.set(SQUELCH_NONE, 0);
     }
     else
@@ -431,12 +411,6 @@ Tuner::cbScan(Controller *instance,
     const uint32_t prevFrequency = tuner->driver.getFrequency();
     const uint32_t prevBandwidth = tuner->driver.getBandwidth();
 
-    if (tuner->volume &&
-        !tuner->squelch.isMuted())
-    {
-        tuner->driver.setVolume(0);
-    }
-
     bool first = true;
 
     do
@@ -466,12 +440,6 @@ Tuner::cbScan(Controller *instance,
     tuner->driver.setFrequency(prevFrequency, TunerDriver::TUNE_DEFAULT);
     tuner->driver.setBandwidth(prevBandwidth);
     tuner->clear();
-
-    if (tuner->volume &&
-        !tuner->squelch.isMuted())
-    {
-        tuner->driver.setVolume(tuner->volume);
-    }
 
     return true;
 }
