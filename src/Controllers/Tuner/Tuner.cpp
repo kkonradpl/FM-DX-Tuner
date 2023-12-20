@@ -312,7 +312,7 @@ Tuner::cbBandwidth(Controller *instance,
 
     if (tuner->driver.setBandwidth(value))
     {
-        tuner->feedback(FMDX_TUNER_PROTOCOL_BANDWIDTH, value);
+        tuner->feedback(FMDX_TUNER_PROTOCOL_BANDWIDTH, tuner->driver.getBandwidth());
         return true;
     }
 

@@ -307,4 +307,34 @@ const uint8_t LITHIO_CONFIG_FMSI[] PROGMEM =
     0
 };
 
+const uint16_t LITHIO_BANDWIDTH_FM[] PROGMEM
+{
+    56,
+    64,
+    72,
+    84,
+    97,
+    114,
+    133,
+    151,
+    168,
+    184,
+    200,
+    217,
+    236,
+    254,
+    287,
+    311,
+    0
+};
+
+const uint16_t LITHIO_BANDWIDTH_AM[] PROGMEM
+{
+    3,
+    4,
+    6,
+    8,
+    0
+};
+
 #endif

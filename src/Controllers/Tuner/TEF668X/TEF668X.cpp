@@ -20,6 +20,7 @@
 #include "Lithio_V101_p119.hpp"
 #include "Lithio_V102_p224.hpp"
 #include "Lithio_V205_p512.hpp"
+#include "../Common/Bandwidth.hpp"
 #include "../../../Utils/Utils.hpp"
 #include "../../../../Config.hpp"
 
@@ -250,9 +251,11 @@ TEF668X::setBandwidth(uint32_t value)
     const uint8_t module = (this->mode == MODE_FM) ? MODULE_FM : MODULE_AM;
     const uint8_t command = (this->mode == MODE_FM) ? FM_Set_Bandwidth : AM_Set_Bandwidth;
     const uint16_t mode = (this->mode == MODE_FM && value == 0) ? 1 : 0;
-    i2c.write(module, command, 4, mode, value / 100, 100, 100);
 
-    this->bandwidth = value;
+    uint16_t bandwidth = Bandwidth::lookup((this->mode == MODE_FM) ? LITHIO_BANDWIDTH_FM : LITHIO_BANDWIDTH_AM, value / 1000);
+    i2c.write(module, command, 4, mode, bandwidth * 10, 100, 100);
+
+    this->bandwidth = (mode == 0 ? (uint32_t)bandwidth * 1000 : 0);
     return true;
 }
 
