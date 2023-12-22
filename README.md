@@ -27,4 +27,7 @@ XDR-F1HD (and others) will be ported soon.
 
 # Configuration
 
-Set the TUNER_TEF668X_REF_CLOCK frequency before FW upload.
+Check the Config.hpp configuration and the corresponding tuner 
+configuration (currently only ConfigTEF668X.hpp is available).
+Set the TUNER_TEF668X_REF_CLOCK frequency in ConfigTEF668X.hpp
+before FW upload.

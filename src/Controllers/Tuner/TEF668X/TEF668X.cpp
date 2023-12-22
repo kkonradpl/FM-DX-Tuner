@@ -22,7 +22,7 @@
 #include "Lithio_V205_p512.hpp"
 #include "../Common/Bandwidth.hpp"
 #include "../../../Utils/Utils.hpp"
-#include "../../../../Config.hpp"
+#include "../../../../ConfigTEF668X.hpp"
 
 void
 TEF668X::setup()

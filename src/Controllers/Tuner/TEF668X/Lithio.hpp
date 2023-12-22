@@ -17,7 +17,7 @@
 #ifndef FMDX_TUNER_LITHIO_H
 #define FMDX_TUNER_LITHIO_H
 
-#include "../../../../Config.hpp"
+#include "../../../../ConfigTEF668X.hpp"
 
 #define LITHIO_I2C 0xC8
 

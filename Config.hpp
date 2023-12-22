@@ -26,34 +26,6 @@
 
 
 /* -----------------------------------------------------------------------
-   TEF668X tuner configuration
-   ----------------------------------------------------------------------- */
-/* Reference clock frequency, supported values:
- * 0 - GPIO selected 4/9.216 MHz
- * 4000000 - 4.000 MHz
- * 9216000 - 9.216 MHz
- * 12000000 - 12.000 MHz
- * 55466670 - 55.46667 MHz */
-#define TUNER_TEF668X_REF_CLOCK 0
-
-/* Reference clock selection pin (GPIO) */
-#define TUNER_TEF668X_PIN_REF_CLOCK 15
-
-/* Versions of tuner patches embedded into firmware
-   Warning: There is no enough space on AVR for all of them at once */
-#define TUNER_TEF668X_PATCH_V101 0
-#define TUNER_TEF668X_PATCH_V102 1
-#define TUNER_TEF668X_PATCH_V205 1
-
-/* FM signal level offset for calibration [dB] */
-#define TUNER_TEF668X_FM_LEVEL_OFFSET -7.5
-
-/* AM signal level offset for calibration [dB] */
-#define TUNER_TEF668X_AM_LEVEL_OFFSET 0
-/* ----------------------------------------------------------------------- */
-
-
-/* -----------------------------------------------------------------------
    Antenna switch configuration
    ----------------------------------------------------------------------- */
 #define ANTENNA_ENABLED 0
