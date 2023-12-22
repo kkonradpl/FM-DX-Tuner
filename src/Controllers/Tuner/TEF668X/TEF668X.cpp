@@ -254,7 +254,7 @@ TEF668X::setBandwidth(uint32_t value)
 
     const uint16_t *table = (this->mode == MODE_FM) ? LITHIO_BANDWIDTH_FM : LITHIO_BANDWIDTH_AM;
     uint16_t bandwidth = Bandwidth::lookup(table, value / 1000, NULL);
-    i2c.write(module, command, 4, mode, bandwidth * 10, 100, 100);
+    i2c.write(module, command, 4, mode, bandwidth * 10, 1000, 1000);
 
     this->bandwidth = (mode == 0 ? (uint32_t)bandwidth * 1000 : 0);
     return true;
