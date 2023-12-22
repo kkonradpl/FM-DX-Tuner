@@ -15,6 +15,7 @@
  *  GNU General Public License for more details.
  */
 
+#include <Arduino.h>
 #include "Filter.hpp"
 #include "Dirana.hpp"
 
