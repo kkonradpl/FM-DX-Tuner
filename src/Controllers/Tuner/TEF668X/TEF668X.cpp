@@ -360,7 +360,22 @@ TEF668X::setCustom(const char *name,
 bool
 TEF668X::getQuality()
 {
-    return rssi.isAvailable();
+    if (!this->rssi.isAvailable())
+    {
+        /* Force update */
+        this->readQuality();
+
+        if (this->rssi.isAvailable())
+        {
+            /* Reset timer if force update succedeed */
+            this->timerQuality.set(this->qualityInterval);
+            return true;
+        }
+
+        return false;
+    }
+
+    return true;
 }
 
 int16_t
