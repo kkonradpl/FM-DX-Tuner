@@ -19,7 +19,7 @@
 #include "src/Controllers/Rotator/Rotator.hpp"
 #include "src/Controllers/Dispatcher/Dispatcher.hpp"
 #include "src/Controllers/Tuner/Tuner.hpp"
-//#include "src/Controllers/Tuner/SAF7730/SAF7730.hpp"
+#include "src/Controllers/Tuner/SAF7730/SAF7730.hpp"
 #include "src/Controllers/Tuner/TEF668X/TEF668X.hpp"
 #include "Config.hpp"
 
