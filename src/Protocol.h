@@ -22,6 +22,7 @@
 
 #define FMDX_TUNER_PROTOCOL_STARTUP     "x"
 #define FMDX_TUNER_PROTOCOL_SHUTDOWN    "X"
+#define FMDX_TUNER_PROTOCOL_CANCEL      ""
 
 #define FMDX_TUNER_PROTOCOL_MODE        "M"
 #define FMDX_TUNER_PROTOCOL_TUNE        "T"

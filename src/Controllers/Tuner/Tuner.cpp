@@ -35,6 +35,13 @@ void
 Tuner::loop()
 {
     this->driver.loop();
+
+    if (this->scan.isActive())
+    {
+        this->scan.process();
+        return;
+    }
+
     this->handleRds();
 
     if (this->driver.getQuality())
@@ -56,6 +63,7 @@ Tuner::getCommands(uint8_t *len)
 {
     static constexpr Command commands[] =
     {
+        { FMDX_TUNER_PROTOCOL_CANCEL, &this->cbCancel },
         { FMDX_TUNER_PROTOCOL_MODE, &this->cbMode },
         { FMDX_TUNER_PROTOCOL_TUNE, &this->cbFrequency },
         { FMDX_TUNER_PROTOCOL_DEEMPHASIS, &this->cbDeemphasis },
@@ -196,10 +204,26 @@ Tuner::handleSquelch()
 }
 
 bool
+Tuner::cbCancel(Controller *instance,
+             const char *args)
+{
+    Tuner *tuner = (Tuner*)instance;
+    (void)args;
+
+    /* Cancel any ongoing asynchronous operation */
+
+    /* Currently only scan is asynchronous */
+    tuner->scan.stop();
+
+    return true;
+}
+
+bool
 Tuner::cbMode(Controller *instance,
               const char *args)
 {
     Tuner *tuner = (Tuner*)instance;
+    tuner->cbCancel(instance, NULL);
     const Mode value = (Mode)atol(args);
 
     const uint32_t prevFrequency = tuner->driver.getFrequency();
@@ -228,6 +252,7 @@ Tuner::cbFrequency(Controller *instance,
                    const char *args)
 {
     Tuner *tuner = (Tuner*)instance;
+    tuner->cbCancel(instance, NULL);
     const uint32_t value = atol(args);
 
     const Mode prevMode = tuner->driver.getMode();
@@ -260,6 +285,7 @@ Tuner::cbDeemphasis(Controller *instance,
                     const char *args)
 {
     Tuner *tuner = (Tuner*)instance;
+    tuner->cbCancel(instance, NULL);
     const uint32_t value = atol(args);
 
     if (tuner->driver.setDeemphasis(value))
@@ -276,6 +302,7 @@ Tuner::cbAgc(Controller *instance,
              const char *args)
 {
     Tuner *tuner = (Tuner*)instance;
+    tuner->cbCancel(instance, NULL);
     const uint32_t value = atol(args);
 
     if (tuner->driver.setAgc(value))
@@ -292,6 +319,7 @@ Tuner::cbAlignment(Controller *instance,
                    const char *args)
 {
     Tuner *tuner = (Tuner*)instance;
+    tuner->cbCancel(instance, NULL);
     const uint32_t value = atol(args);
 
     if (tuner->driver.setAlignment(value))
@@ -308,6 +336,7 @@ Tuner::cbBandwidth(Controller *instance,
                    const char *args)
 {
     Tuner *tuner = (Tuner*)instance;
+    tuner->cbCancel(instance, NULL);
     const uint32_t value = atol(args);
 
     if (tuner->driver.setBandwidth(value))
@@ -324,6 +353,7 @@ Tuner::cbVolume(Controller *instance,
                 const char *args)
 {
     Tuner *tuner = (Tuner*)instance;
+    tuner->cbCancel(instance, NULL);
     const uint32_t value = atol(args);
     
     if (value <= 100)
@@ -342,6 +372,7 @@ Tuner::cbSquelch(Controller *instance,
                  const char *args)
 {
     Tuner *tuner = (Tuner*)instance;
+    tuner->cbCancel(instance, NULL);
     const int32_t value = atol(args);
 
     if (value < 0)
@@ -366,6 +397,7 @@ Tuner::cbOutputMode(Controller *instance,
                     const char *args)
 {
     Tuner *tuner = (Tuner*)instance;
+    tuner->cbCancel(instance, NULL);
     const OutputMode value = (OutputMode)atol(args);
 
     if (tuner->driver.setOutputMode(value))
@@ -382,6 +414,7 @@ Tuner::cbQuality(Controller *instance,
                  const char *args)
 {
     Tuner *tuner = (Tuner*)instance;
+    tuner->cbCancel(instance, NULL);
     const uint32_t value = atol(args);
 
     if (value <= 1000)
@@ -399,49 +432,37 @@ Tuner::cbScan(Controller *instance,
               const char *args)
 {
     Tuner *tuner = (Tuner*)instance;
-    (void)args;
+    tuner->cbCancel(instance, NULL);
 
-    /* FIXME */
-    uint32_t start = 87500;
-    uint32_t end = 108000;
-    uint32_t step = 100;
-    uint32_t bandwidth = 55;
-    bool continous = false;
-
-    const uint32_t prevFrequency = tuner->driver.getFrequency();
-    const uint32_t prevBandwidth = tuner->driver.getBandwidth();
-
-    bool first = true;
-
-    do
+    switch (args[0])
     {
-        Serial.print('U');
+        case 'm':
+        case '\0':
+            tuner->scan.setRepeat(args[0] == 'm');
+            return tuner->scan.start();
 
-        for (uint32_t freq = start; freq <= end; freq += step)
-        {
-            tuner->driver.setFrequency(freq, TunerDriver::TUNE_SCAN);
+        case 'a':
+            tuner->scan.setFrom(atol(args+1));
+            return true;
 
-            if (first)
-            {
-                tuner->driver.setBandwidth(bandwidth);
-                first = false;
-            }
+        case 'b':
+            tuner->scan.setTo(atol(args+1));
+            return true;
 
-            Serial.print(tuner->driver.getFrequency(), DEC);
-            Serial.print('=');
-            Utils::serialDecimal(tuner->driver.getQualityRssi(TunerDriver::QUALITY_FAST), 2);
-            Serial.print(',');
-        }
+        case 'c':
+            tuner->scan.setStep(atol(args+1));
+            return true;
 
-        Serial.print('\n');
+        case 'w':
+            tuner->scan.setBandwidth(atol(args+1));
+            return true;
+
+        case 'z':
+            /* TODO: Antenna */
+            break;
     }
-    while (continous && !Serial.available());
 
-    tuner->driver.setFrequency(prevFrequency, TunerDriver::TUNE_DEFAULT);
-    tuner->driver.setBandwidth(prevBandwidth);
-    tuner->clear();
-
-    return true;
+    return false;
 }
 
 bool
@@ -449,6 +470,7 @@ Tuner::cbCustom(Controller *instance,
                 const char *args)
 {
     Tuner *tuner = (Tuner*)instance;
+    tuner->cbCancel(instance, NULL);
 
     if (tuner->driver.setCustom("custom", args))
     {

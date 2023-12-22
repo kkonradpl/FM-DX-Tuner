@@ -22,6 +22,7 @@
 #include "TunerDriver.hpp"
 #include "Volume.hpp"
 #include "Squelch.hpp"
+#include "Scan.hpp"
 #include "RdsGroupBuffer.hpp"
 #include "RdsPiBuffer.hpp"
 
@@ -42,8 +43,10 @@ private:
     void handleRds();
     void handleQuality();
     void handleSquelch();
+    void handleScan();
 
     /* Callbacks for dispatcher */
+    static bool cbCancel(Controller *instance, const char *args);
     static bool cbMode(Controller *instance, const char *args);
     static bool cbFrequency(Controller *instance, const char *args);
     static bool cbDeemphasis(Controller *instance, const char *args);
@@ -66,6 +69,7 @@ private:
     TunerDriver &driver;
     Volume volume{driver};
     Squelch squelch{volume, squelchTimeout};
+    Scan scan{driver, volume};
 
     Timer timerQuality;
     Timer timerSquelch;
