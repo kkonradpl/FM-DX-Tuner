@@ -22,7 +22,7 @@
 class Bandwidth
 {
 public:
-    static uint32_t lookup(const uint16_t *table, uint16_t reqValue);
+    static uint32_t lookup(const uint16_t *table, uint16_t reqValue, uint8_t *idOut);
 };
 
 #endif

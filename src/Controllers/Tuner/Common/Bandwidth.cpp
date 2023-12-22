@@ -24,12 +24,14 @@
 
 uint32_t
 Bandwidth::lookup(const uint16_t *table,
-                  uint16_t        reqValue)
+                  uint16_t        reqValue,
+                  uint8_t        *idOut)
 {
     uint16_t minDiff = UINT16_MAX;
     uint16_t output = 0;
 
-    while (uint16_t value = pgm_read_word_near(table))
+    uint8_t i = 0;
+    while (uint16_t value = pgm_read_word_near(table + i))
     {
         uint16_t diff = abs((int16_t)(reqValue - value));
 
@@ -37,9 +39,13 @@ Bandwidth::lookup(const uint16_t *table,
         {
             minDiff = diff;
             output = value;
+            if (idOut)
+            {
+                *idOut = i;
+            }
         }
 
-        table++;
+        i++;
     }
 
     return output;
