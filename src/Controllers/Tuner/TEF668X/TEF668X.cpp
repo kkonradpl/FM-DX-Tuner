@@ -331,12 +331,12 @@ TEF668X::setOutputMode(OutputMode value)
     {
         case OUTPUT_MODE_STEREO:
             i2c.write(MODULE_FM, FM_Set_Specials, 1, 0);
-            //i2c.write(MODULE_FM, FM_Set_Stereo_Min, 2, 0, 400);
+            i2c.write(MODULE_FM, FM_Set_Stereo_Min, 2, 0, 400);
             return true;
 
         case OUTPUT_MODE_MONO:
             i2c.write(MODULE_FM, FM_Set_Specials, 1, 0);
-            //i2c.write(MODULE_FM, FM_Set_Stereo_Min, 2, 2, 400);
+            i2c.write(MODULE_FM, FM_Set_Stereo_Min, 2, 2, 400);
             return true;
 
         case OUTPUT_MODE_MPX:

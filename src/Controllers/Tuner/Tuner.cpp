@@ -125,20 +125,20 @@ Tuner::clear()
 void
 Tuner::handleQuality()
 {
-    const auto stereo = this->driver.getQualityStereo(this->qualityMode);
+    const auto pilot = this->driver.getQualityStereo(this->qualityMode);
     const auto rssi = this->driver.getQualityRssi(this->qualityMode);
     const auto cci = this->driver.getQualityCci(this->qualityMode);
     const auto aci = this->driver.getQualityAci(this->qualityMode);
 
     Serial.print('S');
 
-    if (true)
+    if (this->stereo)
     {
-        Serial.print((stereo)?'s':'m');
+        Serial.print(pilot ? 's' : 'm');
     }
     else
     {
-        Serial.print((stereo)?'S':'M');
+        Serial.print(pilot ? 'S' : 'M');
     }
 
     Utils::serialDecimal(rssi, 2);
@@ -403,6 +403,7 @@ Tuner::cbOutputMode(Controller *instance,
     if (tuner->driver.setOutputMode(value))
     {
         tuner->feedback(FMDX_TUNER_PROTOCOL_OUTPUT_MODE, value);
+        tuner->stereo = (value == OUTPUT_MODE_STEREO);
         return true;
     }
 

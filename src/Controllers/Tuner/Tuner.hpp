@@ -70,6 +70,7 @@ private:
     Volume volume{driver};
     Squelch squelch{volume, squelchTimeout};
     Scan scan{driver, volume};
+    bool stereo = true;
 
     Timer timerQuality;
     Timer timerSquelch;
