@@ -17,17 +17,16 @@ of the License, or (at your option) any later version.
 Warning: Firmware is currently compatible with master branch of
 XDR-GTK software, but the protocol is going to be changed.
 
-Only TEF668X driver is available. The SAF7730 driver for
-XDR-F1HD (and others) will be ported soon.
+TEF668X and SAF7730 driver is currently available.
 
 # Tested configurations
 
 - TEF6687/V205 + Arduino Nano clone
 - TEF6687/V205 + ESP32 board by PE5PVB
+- XDR-F1HD + Seeeduino (extended modification)
 
 # Configuration
 
-Check the Config.hpp configuration and the corresponding tuner 
-configuration (currently only ConfigTEF668X.hpp is available).
-Set the TUNER_TEF668X_REF_CLOCK frequency in ConfigTEF668X.hpp
-before FW upload.
+Check the Config.hpp configuration and the corresponding tuner configuration.
+
+For TEF668X, make sure to set correct TUNER_TEF668X_REF_CLOCK frequency in ConfigTEF668X.hpp.
