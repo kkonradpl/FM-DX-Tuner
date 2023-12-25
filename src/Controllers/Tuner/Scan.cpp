@@ -179,6 +179,7 @@ Scan::next(void)
             return;
         }
 
+        Serial.print('\n');
         this->init();
     }
 
