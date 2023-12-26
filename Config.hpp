@@ -20,7 +20,8 @@
 /* -----------------------------------------------------------------------
    Generic tuner configuration
    ----------------------------------------------------------------------- */
-/* Tuner driver (available drivers: TEF668X, SAF7730) */
+/* Tuner driver (available drivers: TEF668X, SAF7730, SAF775X) */
+/* Warning: SAF775X support is currently very experimental */
 #define TUNER_DRIVER TEF668X
 /* ----------------------------------------------------------------------- */
 

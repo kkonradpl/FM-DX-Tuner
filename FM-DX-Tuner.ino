@@ -21,6 +21,7 @@
 #include "src/Controllers/Tuner/Tuner.hpp"
 #include "src/Controllers/Tuner/SAF7730/SAF7730.hpp"
 #include "src/Controllers/Tuner/TEF668X/TEF668X.hpp"
+#include "src/Controllers/Tuner/SAF775X/SAF775X.hpp"
 #include "Config.hpp"
 
 void cbButton(uint8_t  state,
