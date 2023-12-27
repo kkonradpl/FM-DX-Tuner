@@ -64,6 +64,25 @@ I2cDirana::read24(uint32_t addr)
     return buffer;
 }
 
+uint32_t
+I2cDirana::read32(uint32_t addr)
+{
+    uint32_t buffer;
+
+    this->busStartWrite();
+    this->busWrite(ADDR1(addr));
+    this->busWrite(ADDR2(addr));
+    this->busWrite(ADDR3(addr));
+    this->busRestartRead(this->address, 4);
+    buffer = (uint32_t)this->busRead() << 24;
+    buffer |= (uint32_t)this->busRead() << 16;
+    buffer |= (uint16_t)this->busRead() << 8;
+    buffer |= this->busRead();
+    this->busStop();
+
+    return buffer;
+}
+
 void
 I2cDirana::write16(uint32_t addr,
                    uint16_t data)

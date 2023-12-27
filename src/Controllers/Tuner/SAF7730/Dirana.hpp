@@ -23,6 +23,7 @@
 #define DIRANA_DSP_FALSE                0x000
 #define DIRANA_DSP_TRUE                 0x7FF
 
+#define DIRANA_IDENTIFICATION           0x000000
 #define DIRANA_RDS_STATUS               0x000030
 #define DIRANA_RDS_DATA                 0x000031
 #define DIRANA_RDS_CONTROL              0x000035

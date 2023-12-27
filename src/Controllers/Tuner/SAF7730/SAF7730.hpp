@@ -42,9 +42,11 @@ public:
     const char* getName() override;
 
 private:
+    void readVersion();
     void readRds();
 
     I2cDirana i2c{DIRANA_DSP_I2C, DIRANA_IF_I2C};
+    char tuner[16];
     TEF6730 tef6730{i2c};
     Filter filter{i2c};
     bool qualityReady = false;

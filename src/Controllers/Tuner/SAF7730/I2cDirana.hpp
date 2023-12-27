@@ -26,6 +26,7 @@ public:
     
     uint16_t read16(uint32_t addr);
     uint32_t read24(uint32_t addr);
+    uint32_t read32(uint32_t addr);
     void write16(uint32_t addr, uint16_t data);
     void write24(uint32_t addr, uint32_t data);
     void writeConfig(const uint8_t *data);

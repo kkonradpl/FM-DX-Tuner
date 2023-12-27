@@ -25,6 +25,7 @@ SAF7730::start()
     digitalWrite(TUNER_SAF7730_PIN_RESET, HIGH);
     delay(100);
 
+    this->readVersion();
     i2c.writeConfig(DIRANA_INIT);
     return true;
 }
@@ -375,8 +376,19 @@ SAF7730::getQualityStereo(QualityMode mode)
 const char*
 SAF7730::getName()
 {
-    static const char name[] = "SAF7730";
-    return name;
+    return this->tuner;
+}
+
+void
+SAF7730::readVersion()
+{
+    const uint16_t id = i2c.read32(DIRANA_IDENTIFICATION);
+    const uint8_t hwVersion = (uint8_t)((id >> 12) & 0x0F);
+    const uint8_t swVersion = (uint8_t)(id & 0x7F);
+
+    const uint16_t version = ((uint16_t)hwVersion * 100) + swVersion;
+    snprintf(this->tuner, sizeof(this->tuner),
+             "SAF7730/V%d", version);
 }
 
 void
