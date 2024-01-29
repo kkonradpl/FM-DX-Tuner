@@ -562,6 +562,7 @@ TEF668X::readQuality()
     const uint16_t timestamp = data.status & 0x1FF;
     const uint16_t delay = (uint16_t)this->qualityDelay * 10;
     if (timestamp >= delay &&
+        data.level >= -200 &&
         data.level <= 1200)
     {
         this->rssi.add(data.level * 10);
