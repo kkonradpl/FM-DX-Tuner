@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023-2024  Konrad Kosmatka
+ *  Copyright (C) 2024  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -14,20 +14,24 @@
  *  GNU General Public License for more details.
  */
 
-#ifndef FMDX_TUNER_ANTENNA_H
-#define FMDX_TUNER_ANTENNA_H
+#ifndef FMDX_TUNER_ANTENNA_BCD_H
+#define FMDX_TUNER_ANTENNA_BCD_H
 #include <stdint.h>
 #include "../Controller.hpp"
 #include "../Tuner/Tuner.hpp"
 #include "../../../Config.hpp"
 
-class Antenna : public Controller
+#define BCD_SIZE(n) (((sizeof(unsigned int) * 8)) - (__builtin_clz((n - 1))))
+
+class AntennaBCD : public Controller
 {
 public:
     template <typename... Args>
-    Antenna(Tuner &_tuner, Args... args) : tuner(_tuner), pins{ uint8_t(args)... }
+    AntennaBCD(Tuner &_tuner, Args... args) : tuner(_tuner), pins{ uint8_t(args)... }
     {
-        static_assert(sizeof...(Args) == ANTENNA_COUNT, "Invalid count of pins");
+        constexpr int maxCount = 1 << sizeof...(Args);
+        static_assert(ANTENNA_COUNT > 1, "Invalid count of antennas");
+        static_assert(ANTENNA_COUNT <= maxCount, "Invalid count of pins");
     }
 
     void setup();
@@ -37,11 +41,11 @@ public:
 
 private:
     Tuner &tuner;
-    const uint8_t pins[ANTENNA_COUNT];
+    const uint8_t pins[BCD_SIZE(ANTENNA_COUNT)];
     uint8_t current = 0;
-    
+
     void print();
-    
+
     /* Callbacks for dispatcher */
     static bool cbRequest(Controller *instance, const char *args);
 };

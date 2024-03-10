@@ -30,8 +30,12 @@
    Antenna switch configuration
    ----------------------------------------------------------------------- */
 #define ANTENNA_ENABLED 0
-#define ANTENNA_COUNT   4
-#define ANTENNA_PINS    8, 9, 10, 11
+
+/* Antenna driver (available drivers: Antenna, AntennaBCD) */
+#define ANTENNA_DRIVER Antenna
+
+#define ANTENNA_COUNT 4
+#define ANTENNA_PINS  8, 9, 10, 11
 
 /* Delay of the antenna switch [miliseconds] */
 #define ANTENNA_SWITCH_DELAY 50

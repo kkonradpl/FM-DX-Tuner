@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023  Konrad Kosmatka 
+ *  Copyright (C) 2023-2024  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -15,6 +15,7 @@
  */
 
 #include "src/Controllers/Antenna/Antenna.hpp"
+#include "src/Controllers/AntennaBCD/AntennaBCD.hpp"
 #include "src/Controllers/Button/Button.hpp"
 #include "src/Controllers/Rotator/Rotator.hpp"
 #include "src/Controllers/Dispatcher/Dispatcher.hpp"
@@ -40,7 +41,7 @@ Button button(BUTTON_PIN, &cbButton, NULL);
 Rotator rotator(ROTATOR_PIN_CW, ROTATOR_PIN_CCW);
 TUNER_DRIVER driver;
 Tuner tuner(driver);
-Antenna antenna(tuner, ANTENNA_PINS);
+ANTENNA_DRIVER antenna(tuner, ANTENNA_PINS);
 
 Controller *ctrls[] =
 {
