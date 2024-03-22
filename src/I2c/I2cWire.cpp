@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023  Konrad Kosmatka 
+ *  Copyright (C) 2023-2024  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -20,6 +20,11 @@
 #include "../Utils/Utils.hpp"
 
 I2cWire::I2cWire(uint8_t _address) : address(_address >> 1)
+{
+}
+
+void
+I2cWire::init(void)
 {
     Wire.begin();
 #ifdef ARDUINO_ARCH_ESP32
