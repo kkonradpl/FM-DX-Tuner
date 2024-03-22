@@ -19,6 +19,7 @@
 #ifdef ARDUINO_ARCH_AVR
 
 #include "I2cMaster/I2cMaster.h"
+#include "../../Config.hpp"
 
 class I2cAvr
 {
@@ -41,7 +42,7 @@ protected:
     const uint8_t address;
 
 private:
-    TwiMaster bus{true};
+    TwiMaster bus{TUNER_AVR_PULLUP};
     uint8_t readLength;
 };
 

@@ -1,19 +1,3 @@
-/*  SPDX-License-Identifier: GPL-3.0-or-later
- *
- *  FM-DX Tuner
- *  Copyright (C) 2023  Konrad Kosmatka 
- *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License
- *  as published by the Free Software Foundation; either version 3
- *  of the License, or (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- */
-
 #ifndef FMDX_TUNER_CONFIG_H
 #define FMDX_TUNER_CONFIG_H
 
@@ -23,6 +7,11 @@
 /* Tuner driver (available drivers: TEF668X, SAF7730, SAF775X) */
 /* Warning: SAF775X support is currently very experimental */
 #define TUNER_DRIVER TEF668X
+
+/* I2C pull-ups in Arduino AVR driver */
+/* Enable only on Arduino boards modified to 3.3V operation
+   For 5V boards use external 10 kΩ pull-ups from SDA and SCL to 3.3V */
+#define TUNER_AVR_PULLUP false
 /* ----------------------------------------------------------------------- */
 
 
