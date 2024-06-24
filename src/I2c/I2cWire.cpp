@@ -18,6 +18,9 @@
 #include <Wire.h>
 #include "I2cWire.hpp"
 #include "../Utils/Utils.hpp"
+#ifdef ARDUINO_ARCH_ESP32
+#include <driver/gpio.h>
+#endif
 
 I2cWire::I2cWire(uint8_t _address) : address(_address >> 1)
 {
