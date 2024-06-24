@@ -15,6 +15,7 @@
  */
 
 #include <Arduino.h>
+#include "../../../Comm.hpp"
 #include "TEF668X.hpp"
 #include "Lithio.hpp"
 #include "Lithio_V101_p119.hpp"
@@ -27,6 +28,9 @@
 void
 TEF668X::setup()
 {
+#if TUNER_TEF668X_RDS_DAVN
+    pinMode(TUNER_TEF668X_PIN_RDS_DAVN, INPUT);
+#endif
     i2c.init();
 }
 
@@ -80,7 +84,9 @@ TEF668X::start()
            longer delay can improve compability with untested versions. */
 
         timerQuality.set(this->qualityInterval);
+#if TUNER_TEF668X_RDS_DAVN == false
         timerRds.set(this->rdsInterval);
+#endif
         timerUnmute.set(0);
 
         return true;
@@ -94,7 +100,9 @@ TEF668X::shutdown()
 {
     i2c.write(MODULE_APPL, APPL_Set_OperationMode, 1, 1);
     this->timerQuality.unset();
-    this->timerRds.unset();
+#if TUNER_TEF668X_RDS_DAVN == false
+     this->timerRds.unset();
+#endif
     this->timerMute.unset();
     this->timerUnmute.unset();
 }
@@ -112,10 +120,16 @@ TEF668X::loop()
         this->readQuality();
     }
 
-    if (mode == MODE_FM &&
-        this->timerRds.process(Timer::Continous))
+    if (mode == MODE_FM)
     {
-        this->readRds();
+#if TUNER_TEF668X_RDS_DAVN
+        if (!digitalRead(TUNER_TEF668X_PIN_RDS_DAVN))
+#else
+        if (this->timerRds.process(Timer::Continous))
+#endif
+        {
+            this->readRds();
+        }
     }
 
     if (this->timerMute.process(Timer::Oneshot))
@@ -141,7 +155,7 @@ TEF668X::resetRds()
 {
     const uint16_t mode = (this->fmsi ? 3 : 1);
     constexpr uint16_t restart = 1;
-    constexpr uint16_t interface = 0;
+    constexpr uint16_t interface = (TUNER_TEF668X_RDS_DAVN ? 2 : 0);
     i2c.write(MODULE_FM, FM_Set_RDS, 3, mode, restart, interface);
 }
 

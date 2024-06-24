@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023  Konrad Kosmatka 
+ *  Copyright (C) 2023-2024  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -15,6 +15,7 @@
  */
 
 #include <Arduino.h>
+#include "../../Comm.hpp"
 #include "Tuner.hpp"
 #include "../../Utils/Utils.hpp"
 #include "../../Protocol.h"
@@ -130,24 +131,24 @@ Tuner::handleQuality()
     const auto cci = this->driver.getQualityCci(this->qualityMode);
     const auto aci = this->driver.getQualityAci(this->qualityMode);
 
-    Serial.print('S');
+    Comm.print('S');
 
     if (this->stereo)
     {
-        Serial.print(pilot ? 's' : 'm');
+        Comm.print(pilot ? 's' : 'm');
     }
     else
     {
-        Serial.print(pilot ? 'S' : 'M');
+        Comm.print(pilot ? 'S' : 'M');
     }
 
     Utils::serialDecimal(rssi, 2);
 
-    Serial.print(',');
-    Serial.print(cci, DEC);
-    Serial.print(',');
-    Serial.print(aci, DEC);
-    Serial.print('\n');
+    Comm.print(',');
+    Comm.print(cci, DEC);
+    Comm.print(',');
+    Comm.print(aci, DEC);
+    Comm.print('\n');
 }
 
 void
@@ -157,22 +158,22 @@ Tuner::handleRds()
     RdsPiBuffer::State piState = this->driver.piBuffer.get(pi);
     if (piState != RdsPiBuffer::STATE_INVALID)
     {
-        Serial.print('P');
+        Comm.print('P');
         Utils::serialHexPi(pi, (uint8_t)piState);
-        Serial.print('\n');
+        Comm.print('\n');
     }
 
     uint16_t *rdsData;
     uint8_t rdsStatus;
     if (this->driver.rdsBuffer.get(&rdsData, &rdsStatus))
     {
-        Serial.print('R');
+        Comm.print('R');
         Utils::serialHex16(rdsData[0]);
         Utils::serialHex16(rdsData[1]);
         Utils::serialHex16(rdsData[2]);
         Utils::serialHex16(rdsData[3]);
         Utils::serialHex8(rdsStatus);
-        Serial.print('\n');
+        Comm.print('\n');
     }
 }
 
@@ -475,9 +476,9 @@ Tuner::cbCustom(Controller *instance,
 
     if (tuner->driver.setCustom("custom", args))
     {
-        Serial.print(FMDX_TUNER_PROTOCOL_CUSTOM);
-        Serial.print(args);
-        Serial.print('\n');
+        Comm.print(FMDX_TUNER_PROTOCOL_CUSTOM);
+        Comm.print(args);
+        Comm.print('\n');
         return true;
     }
 
@@ -488,9 +489,9 @@ void
 Tuner::feedback(const char *message,
                 uint32_t    value)
 {
-    Serial.print(message);
-    Serial.print(value, DEC);
-    Serial.print('\n');
+    Comm.print(message);
+    Comm.print(value, DEC);
+    Comm.print('\n');
 }
 
 
@@ -499,10 +500,10 @@ Tuner::feedback2(const char *message,
                  uint32_t    value,
                  uint32_t    value2)
 {
-    Serial.print(message);
-    Serial.print(value, DEC);
-    Serial.print(",");
-    Serial.print(value2, DEC);
-    Serial.print('\n');
+    Comm.print(message);
+    Comm.print(value, DEC);
+    Comm.print(",");
+    Comm.print(value2, DEC);
+    Comm.print('\n');
 }
 

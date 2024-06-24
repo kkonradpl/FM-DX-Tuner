@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023  Konrad Kosmatka 
+ *  Copyright (C) 2023-2024  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -17,6 +17,7 @@
 #ifndef FMDX_TUNER_LITHIO_H
 #define FMDX_TUNER_LITHIO_H
 
+#include "../../../../Config.hpp"
 #include "../../../../ConfigTEF668X.hpp"
 
 #define LITHIO_I2C 0xC8
@@ -276,6 +277,13 @@ const uint8_t LITHIO_CONFIG[] PROGMEM =
     LITHIO_DATA(MODULE_AM, AM_Set_LevelOffset, 1, (uint16_t)((int16_t)TUNER_TEF668X_AM_LEVEL_OFFSET * 10)),
     
     LITHIO_DATA(MODULE_AUDIO, AUDIO_Set_Volume, 1, 0),
+#if AUDIO_I2S_ENABLED
+    LITHIO_DATA(MODULE_AUDIO, AUDIO_Set_Dig_IO, 1, 33, 2, 16, 256, 4800),
+#endif
+#if TUNER_TEF668X_RDS_DAVN
+    LITHIO_DATA(MODULE_APPL, APPL_Set_GPIO, 1, 0, MODULE_FM, 257),
+    LITHIO_DATA(MODULE_APPL, APPL_Set_GPIO, 1, 0, MODULE_AM, 3),
+#endif
     0
 };
 

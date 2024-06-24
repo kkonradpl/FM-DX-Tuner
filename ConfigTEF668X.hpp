@@ -15,6 +15,12 @@
 /* Reference clock selection pin (GPIO) */
 #define TUNER_TEF668X_PIN_REF_CLOCK 15
 
+/* RDS DAVN GPIO mode (true) or I2C polling (false) */
+#define TUNER_TEF668X_RDS_DAVN false
+
+/* RDS DAVN pin (GPIO) */
+#define TUNER_TEF668X_PIN_RDS_DAVN PB7
+
 /* Versions of tuner patches embedded into firmware
    Warning: There is no enough space on AVR for all of them at once */
 #define TUNER_TEF668X_PATCH_V101 0

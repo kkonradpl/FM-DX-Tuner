@@ -15,6 +15,7 @@
  */
 
 #include <Arduino.h>
+#include "../../Comm.hpp"
 #include "AntennaBCD.hpp"
 
 void
@@ -30,9 +31,9 @@ AntennaBCD::setup()
 void
 AntennaBCD::hello()
 {
-    //Serial.print("ANT:0-");
-    //Serial.print(ANTENNA_COUNT, DEC);
-    //Serial.print('\n');
+    //Comm.print("ANT:0-");
+    //Comm.print(ANTENNA_COUNT, DEC);
+    //Comm.print('\n');
 
     this->print();
 }
@@ -56,9 +57,9 @@ AntennaBCD::getCommands(uint8_t *len)
 
 void AntennaBCD::print()
 {
-    Serial.print('Z');
-    Serial.print(this->current, DEC);
-    Serial.print('\n');
+    Comm.print('Z');
+    Comm.print(this->current, DEC);
+    Comm.print('\n');
 }
 
 bool

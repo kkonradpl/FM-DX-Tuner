@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023  Konrad Kosmatka 
+ *  Copyright (C) 2023-2024  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -15,6 +15,7 @@
  */
 
 #include <Arduino.h>
+#include "../../Comm.hpp"
 #include "Rotator.hpp"
 #include "../../../Config.hpp"
 
@@ -97,17 +98,17 @@ Rotator::stop()
 void
 Rotator::print()
 {
-    Serial.print('C');
+    Comm.print('C');
     if (this->req_state)
     {
-        Serial.print('-');
-        Serial.print(this->req_state, DEC);
+        Comm.print('-');
+        Comm.print(this->req_state, DEC);
     }
     else
     {
-        Serial.print(this->state, DEC);
+        Comm.print(this->state, DEC);
     }
-    Serial.print('\n');
+    Comm.print('\n');
 }
 
 bool

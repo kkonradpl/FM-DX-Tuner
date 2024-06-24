@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023  Konrad Kosmatka 
+ *  Copyright (C) 2023-2024  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -84,7 +84,9 @@ private:
     AvgData<uint16_t, uint32_t, uint8_t, 300 / qualityInterval> cci;
 
     Timer timerQuality;
+#if TUNER_TEF668X_RDS_DAVN == false
     Timer timerRds;
+#endif
     Timer timerMute;
     Timer timerUnmute;
 };

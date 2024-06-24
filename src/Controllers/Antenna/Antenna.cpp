@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023  Konrad Kosmatka 
+ *  Copyright (C) 2023-2024  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -15,6 +15,7 @@
  */
 
 #include <Arduino.h>
+#include "../../Comm.hpp"
 #include "Antenna.hpp"
 
 void
@@ -30,9 +31,9 @@ Antenna::setup()
 void
 Antenna::hello()
 {
-    //Serial.print("ANT:0-");
-    //Serial.print(ANTENNA_COUNT, DEC);
-    //Serial.print('\n');
+    //Comm.print("ANT:0-");
+    //Comm.print(ANTENNA_COUNT, DEC);
+    //Comm.print('\n');
     
     this->print();
 }
@@ -56,9 +57,9 @@ Antenna::getCommands(uint8_t *len)
 
 void Antenna::print()
 {
-    Serial.print('Z');
-    Serial.print(this->current, DEC);
-    Serial.print('\n');
+    Comm.print('Z');
+    Comm.print(this->current, DEC);
+    Comm.print('\n');
 }
     
 bool

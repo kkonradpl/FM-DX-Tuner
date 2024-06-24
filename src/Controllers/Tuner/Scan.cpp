@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023  Konrad Kosmatka 
+ *  Copyright (C) 2023-2024  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -15,6 +15,7 @@
  */
 
 #include <Arduino.h>
+#include "../../Comm.hpp"
 #include "Scan.hpp"
 #include "TunerDriver.hpp"
 #include "../../Utils/Utils.hpp"
@@ -132,7 +133,7 @@ Scan::stop()
     this->volume.unMute();
     this->state = None;
 
-    Serial.print('\n');
+    Comm.print('\n');
 }
 
 void
@@ -146,8 +147,8 @@ Scan::process()
 
     TunerDriver::QualityMode mode = TunerDriver::QUALITY_FAST;
 
-    Serial.print(this->driver.getFrequency(), DEC);
-    Serial.print('=');
+    Comm.print(this->driver.getFrequency(), DEC);
+    Comm.print('=');
     Utils::serialDecimal(this->driver.getQualityRssi(mode), 2);
 
     this->next();
@@ -158,7 +159,7 @@ Scan::init(void)
 {
     /* TODO: Due to asynchronous nature of scanning,
        the message will be changed in new protocol */
-    Serial.print('U');
+    Comm.print('U');
     /* Currently, it can be easily corrupted by another
        message coming from a different controller */
 
@@ -179,11 +180,11 @@ Scan::next(void)
             return;
         }
 
-        Serial.print('\n');
+        Comm.print('\n');
         this->init();
     }
 
     this->driver.setFrequency(this->current, TunerDriver::TUNE_SCAN);
     this->driver.resetQuality();
-    Serial.print(',');
+    Comm.print(',');
 }

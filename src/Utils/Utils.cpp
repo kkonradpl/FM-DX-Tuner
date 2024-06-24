@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023  Konrad Kosmatka 
+ *  Copyright (C) 2023-2024  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -15,13 +15,14 @@
  */
 
 #include <Arduino.h>
+#include "../Comm.hpp"
 #include "Utils.hpp"
 
 void
 Utils::serialHex8(uint8_t value)
 {
-    Serial.print(value >> 4, HEX);
-    Serial.print(value & 0xF, HEX);
+    Comm.print(value >> 4, HEX);
+    Comm.print(value & 0xF, HEX);
 }
 
 void
@@ -39,7 +40,7 @@ Utils::serialHexPi(uint16_t value,
     
     while (error--)
     {
-        Serial.print('?');
+        Comm.print('?');
     }
 }
 
@@ -61,15 +62,15 @@ Utils::serialDecimal(int16_t value,
         fraction = -fraction;
         if (integer == 0)
         {
-            Serial.print('-');
+            Comm.print('-');
         }
     }
 
-    Serial.print(integer, DEC);
+    Comm.print(integer, DEC);
 
     if (fraction)
     {
-        Serial.print('.');
+        Comm.print('.');
 
         /* Count leading zeros */
         uint8_t i = precision;
@@ -83,7 +84,7 @@ Utils::serialDecimal(int16_t value,
         /* Print leading zeros */
         while (i--)
         {
-            Serial.print('0');
+            Comm.print('0');
         }
 
         /* Remove all trailing zeros */
@@ -93,6 +94,6 @@ Utils::serialDecimal(int16_t value,
         }
 
         /* Print rest of the fractional part */
-        Serial.print(fraction, DEC);
+        Comm.print(fraction, DEC);
     }
 }

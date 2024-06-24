@@ -14,6 +14,7 @@
  *  GNU General Public License for more details.
  */
 
+#include "src/Platform/PlatformDriver.hpp"
 #include "src/Controllers/Antenna/Antenna.hpp"
 #include "src/Controllers/AntennaBCD/AntennaBCD.hpp"
 #include "src/Controllers/Button/Button.hpp"
@@ -23,6 +24,8 @@
 #include "src/Controllers/Tuner/SAF7730/SAF7730.hpp"
 #include "src/Controllers/Tuner/TEF668X/TEF668X.hpp"
 #include "src/Controllers/Tuner/SAF775X/SAF775X.hpp"
+#include "src/I2s/I2sDriver.hpp"
+#include "src/Comm.hpp"
 #include "Config.hpp"
 
 void cbButton(uint8_t  state,
@@ -32,11 +35,11 @@ void cbButton(uint8_t  state,
 
     if (state == Button::STATE_PRESSED)
     {
-        Serial.print("!\n");
+        Comm.print("!\n");
     }
-}  
+}
 
-Dispatcher dispatcher(Serial);
+Dispatcher dispatcher(Comm);
 Button button(BUTTON_PIN, &cbButton, NULL);
 Rotator rotator(ROTATOR_PIN_CW, ROTATOR_PIN_CCW);
 TUNER_DRIVER driver;
@@ -60,8 +63,9 @@ Controller *ctrls[] =
 
 void setup()
 {
-    Serial.begin(SERIAL_PORT_SPEED);
-    while(!Serial);
+    PlatformDriver_Setup();
+    Comm.begin(SERIAL_PORT_SPEED);
+    while(!Comm);
 
     const size_t count = sizeof(ctrls) / sizeof(ctrls[0]);
     dispatcher.setControllers(ctrls, count);
@@ -81,29 +85,26 @@ void loop()
         status = tuner.start(); 
     } while (!status);
 
+#if AUDIO_I2S_ENABLED
+    I2sDriver_Start();
+#endif
+
     for (auto &controller : ctrls)
     {
         controller->hello();
     }
 
-    for (;;)
+    while (dispatcher.isRunning())
     {
         for (auto &controller : ctrls)
         {
             controller->loop();
         }
-
-        if (!dispatcher.isRunning())
-        {
-            tuner.shutdown();
-            break;
-        }
     }
 
-/*
-    for (auto &controller : ctrls)
-    {
-        controller->shutdown();
-    }
-*/
+#if AUDIO_I2S_ENABLED
+    I2sDriver_Stop();
+#endif
+
+    tuner.shutdown();
 }
