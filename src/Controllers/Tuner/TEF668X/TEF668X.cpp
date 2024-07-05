@@ -31,6 +31,9 @@ TEF668X::setup()
 #if TUNER_TEF668X_RDS_DAVN
     pinMode(TUNER_TEF668X_PIN_RDS_DAVN, INPUT);
 #endif
+#if TUNER_TEF668X_DAC_CONF
+    pinMode(TUNER_TEF668X_PIN_DAC_CONF, INPUT);
+#endif
     i2c.init();
 }
 
@@ -82,6 +85,14 @@ TEF668X::start()
 
         /* The delay of 16 ms seems to be sufifcent for 6687/V205, but
            longer delay can improve compability with untested versions. */
+
+#if TUNER_TEF668X_DAC_CONF
+        if (!digitalRead(TUNER_TEF668X_PIN_DAC_CONF))
+        {
+            /* Output MPX by default when the pin is low */
+            i2c.write(MODULE_FM, FM_Set_Specials, 1, 1);
+        }
+#endif
 
         timerQuality.set(this->qualityInterval);
 #if TUNER_TEF668X_RDS_DAVN == false
@@ -345,12 +356,16 @@ TEF668X::setOutputMode(OutputMode value)
     switch (value)
     {
         case OUTPUT_MODE_STEREO:
+#if TUNER_TEF668X_DAC_CONF == false
             i2c.write(MODULE_FM, FM_Set_Specials, 1, 0);
+#endif
             i2c.write(MODULE_FM, FM_Set_Stereo_Min, 2, 0, 400);
             return true;
 
         case OUTPUT_MODE_MONO:
+#if TUNER_TEF668X_DAC_CONF == false
             i2c.write(MODULE_FM, FM_Set_Specials, 1, 0);
+#endif
             i2c.write(MODULE_FM, FM_Set_Stereo_Min, 2, 2, 400);
             return true;
 
