@@ -32,7 +32,7 @@ TEF668X::setup()
     pinMode(TUNER_TEF668X_PIN_RDS_DAVN, INPUT);
 #endif
 #if TUNER_TEF668X_DAC_CONF
-    pinMode(TUNER_TEF668X_PIN_DAC_CONF, INPUT);
+    pinMode(TUNER_TEF668X_PIN_DAC_CONF, INPUT_PULLUP);
 #endif
     i2c.init();
 }
