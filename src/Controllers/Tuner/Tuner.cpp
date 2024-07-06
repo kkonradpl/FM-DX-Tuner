@@ -19,6 +19,7 @@
 #include "Tuner.hpp"
 #include "../../Utils/Utils.hpp"
 #include "../../Protocol.h"
+#include "../../../Config.hpp"
 
 void
 Tuner::setup()
@@ -168,11 +169,21 @@ Tuner::handleRds()
     if (this->driver.rdsBuffer.get(&rdsData, &rdsStatus))
     {
         Comm.print('R');
+#if TUNER_LEGACY_RDS_MSG == false
         Utils::serialHex16(rdsData[0]);
+#endif
         Utils::serialHex16(rdsData[1]);
         Utils::serialHex16(rdsData[2]);
         Utils::serialHex16(rdsData[3]);
+#if TUNER_LEGACY_RDS_MSG == false
         Utils::serialHex8(rdsStatus);
+#else
+        uint8_t legacyStatus = 0;
+        legacyStatus |= (rdsStatus & B00110000) >> 4;
+        legacyStatus |= (rdsStatus & B00001100);
+        legacyStatus |= (rdsStatus & B00000011) << 4;
+        Utils::serialHex8(legacyStatus);
+#endif
         Comm.print('\n');
     }
 }

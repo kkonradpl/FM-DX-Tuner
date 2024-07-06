@@ -12,6 +12,13 @@
 /* Enable only on Arduino boards modified to 3.3V operation
    For 5V boards use external 10 kΩ pull-ups from SDA and SCL to 3.3V */
 #define TUNER_AVR_PULLUP false
+
+/* Legacy RDS message (R) in the communication protocol */
+/* Keep enabled for pre-v1.2 XDR-GTK compability. New message additionaly
+   contains the first block (PI code), which is useful for direct
+   passthrough to RDS Spy. When using the legacy message, the first block
+   is reconstructed from the buffered PI code message (P) for RDS Spy. */
+#define TUNER_LEGACY_RDS_MSG true
 /* ----------------------------------------------------------------------- */
 
 
