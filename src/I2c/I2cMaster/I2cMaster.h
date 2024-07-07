@@ -29,11 +29,12 @@
 #else  // ARDUINO
 #include <Arduino.h>
 #endif  // ARDUINO
+#include "../../../Config.hpp"
 
 #ifdef ARDUINO_ARCH_AVR
 
 /** hardware I2C clock in Hz */
-uint32_t const F_TWI = 400000L;
+uint32_t const F_TWI = TUNER_I2C_CLOCK;
 
 /** Delay used for software I2C */
 uint8_t const I2C_DELAY_USEC = 4;

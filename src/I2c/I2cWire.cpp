@@ -18,6 +18,7 @@
 #include <Wire.h>
 #include "I2cWire.hpp"
 #include "../Utils/Utils.hpp"
+#include "../../Config.hpp"
 #ifdef ARDUINO_ARCH_ESP32
 #include <driver/gpio.h>
 #endif
@@ -30,6 +31,7 @@ void
 I2cWire::init(void)
 {
     Wire.begin();
+    Wire.setClock(TUNER_I2C_CLOCK);
 #ifdef ARDUINO_ARCH_ESP32
     /* Decrease I2C bus inteference */
     gpio_set_drive_capability((gpio_num_t)21, GPIO_DRIVE_CAP_0);
