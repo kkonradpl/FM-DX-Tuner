@@ -40,6 +40,9 @@ Check the `Config.hpp` file and the corresponding tuner configurations.
 
 The directory `presets` contains predefined configuration files.
 
+Some boards do not work with 400 kHz I2C bus. If you're unable to start
+the tuner, try lowering the `TUNER_I2C_CLOCK` value to 100 kHz.
+
 # TEF668X configuration
 
 Make sure to set correct `TUNER_TEF668X_REF_CLOCK` frequency. Wrong
@@ -66,3 +69,11 @@ box with the default configuration.
 If your tuner module does not have the 3.3V I2C pull-ups (SDA/A4 and
 SCL/A5 is almost 0V), then you need to solder 10 kΩ resistors: one
 between 3.3V and SDA (A4), and another one between 3.3V and SCL (A5).
+
+# Donations
+
+This is an open-source project which is free. If you like it,
+you can consider buying me a coffee.
+
+<a href="https://www.buymeacoffee.com/kkonradpl"><img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=kkonradpl&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
+
