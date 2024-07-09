@@ -20,6 +20,7 @@
 #include "../TunerDriver.hpp"
 #include "../AvgData.hpp"
 #include "../../../Utils/Timer.hpp"
+#include "../../../../Config.hpp"
 #include "Lithio.hpp"
 #include "I2cTef668x.hpp"
 
@@ -79,7 +80,7 @@ private:
     static constexpr uint32_t maxVhfFreq = 108000;
 
     static constexpr Timer::Interval rdsInterval = 87 / 2;
-    static constexpr Timer::Interval qualityInterval = 4;
+    static constexpr Timer::Interval qualityInterval = (TUNER_I2C_CLOCK >= 200000L) ? 2 : 4;
     AvgData<int16_t, int32_t, uint8_t, 100 / qualityInterval> rssi;
     AvgData<uint16_t, uint32_t, uint8_t, 300 / qualityInterval> cci;
 
