@@ -18,5 +18,6 @@
 #define FMDX_TUNER_PLATFORM_DRIVER_H
 
 __attribute__((weak)) void PlatformDriver_Setup(void) {};
+__attribute__((weak)) void PlatformDriver_PostSetup(void) {};
 
 #endif

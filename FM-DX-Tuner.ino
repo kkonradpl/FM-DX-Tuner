@@ -78,6 +78,8 @@ void loop()
         controller->setup();
     }
 
+    PlatformDriver_PostSetup();
+
     bool status;
     do
     {

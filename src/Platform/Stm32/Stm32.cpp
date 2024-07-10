@@ -28,6 +28,16 @@ PlatformDriver_Setup(void)
     tud_init(0);
 }
 
+void
+PlatformDriver_PostSetup(void)
+{
+    /* Override speed of output drivers to the lowest */
+    GPIOA->OSPEEDR = 0;
+    GPIOB->OSPEEDR = 0;
+    GPIOC->OSPEEDR = 0;
+    GPIOD->OSPEEDR = 0;
+}
+
 /* The USB_IRQHandler will take care of the 1ms isochronous
    interrupt for UAC2 audio and incoming CDC data (RX) */
 extern "C" void
