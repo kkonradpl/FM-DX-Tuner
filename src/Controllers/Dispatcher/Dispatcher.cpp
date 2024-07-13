@@ -16,6 +16,7 @@
 
 #include <Arduino.h>
 #include "Dispatcher.hpp"
+#include "../../Controllers/Led/Led.hpp"
 #include "../../Protocol.h"
 #include "../../../Config.hpp"
 
@@ -105,6 +106,11 @@ Dispatcher::read()
 
     buff[buff_pos] = '\0';
     buff_pos = 0;
+
+#if LED_ENABLED && defined(LED_ID_COMMAND)
+    led.blink(LED_ID_COMMAND, 50);
+#endif
+
     return true;
 }
 

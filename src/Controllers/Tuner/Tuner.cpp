@@ -20,6 +20,7 @@
 #include "../../Utils/Utils.hpp"
 #include "../../Protocol.h"
 #include "../../../Config.hpp"
+#include "../Led/Led.hpp"
 
 void
 Tuner::setup()
@@ -95,6 +96,10 @@ Tuner::start()
         constexpr Timer::Interval squelchInterval = 50;
         this->timerSquelch.set(squelchInterval);
 
+#if LED_ENABLED && defined(LED_ID_POWER)
+        led.on(LED_ID_POWER);
+#endif
+
         return true;
     }
 
@@ -112,6 +117,10 @@ Tuner::shutdown()
 #ifdef ARDUINO_ARCH_AVR
     /* Release SDA and SCL lines used by hardware I2C */
     TWCR = 0;
+#endif
+
+#if LED_ENABLED && defined(LED_ID_POWER)
+    led.off(LED_ID_POWER);
 #endif
 }
 

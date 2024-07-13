@@ -35,6 +35,19 @@
 /* ----------------------------------------------------------------------- */
 
 
+/* -------------------------------------------------------------------------
+   LED configuration
+   ----------------------------------------------------------------------- */
+#define LED_ENABLED 1
+
+#define LED_COUNT 2
+#define LED_PINS PA15, PA8
+
+#define LED_ID_POWER   0
+#define LED_ID_COMMAND 1
+/* ----------------------------------------------------------------------- */
+
+
 /* -----------------------------------------------------------------------
    Antenna switch configuration
    ----------------------------------------------------------------------- */
@@ -54,9 +67,9 @@
 /* -----------------------------------------------------------------------
    Rotator controller configuration
    ----------------------------------------------------------------------- */
-#define ROTATOR_ENABLED 0
-#define ROTATOR_PIN_CW  6
-#define ROTATOR_PIN_CCW 7
+#define ROTATOR_ENABLED 1
+#define ROTATOR_PIN_CW  PB4
+#define ROTATOR_PIN_CCW PB5
 
 /* Automatic rotator stop after specified time [seconds] */
 #define ROTATOR_TIMEOUT 90
