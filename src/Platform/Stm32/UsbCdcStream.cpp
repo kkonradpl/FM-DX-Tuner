@@ -77,7 +77,7 @@ UsbCdcStream::write(uint8_t value)
     txWritePos = (txWritePos + 1) % BUFF_SIZE;
 
     /* Continue in an interrupt */
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+    SCB->ICSR = SCB_ICSR_PENDSVSET_Msk;
     return 1;
 }
 

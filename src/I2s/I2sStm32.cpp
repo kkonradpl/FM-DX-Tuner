@@ -18,6 +18,7 @@
 #include <Arduino.h>
 #include <tusb.h>
 #include <stm32f0xx.h>
+#include "AudioBuffer.hpp"
 #include "../Comm.hpp"
 
 #define I2S_PIN_WS GPIO_PIN_4
@@ -27,14 +28,20 @@
 I2S_HandleTypeDef hi2s1;
 DMA_HandleTypeDef hdma_spi1_rx;
 
-#define AUDIO_BUFFER_SIZE 192
-static uint16_t buffer[AUDIO_BUFFER_SIZE];
+#define FRAME_SIZE_BYTES 192
+
+#define DMA_BUFFER_SIZE (FRAME_SIZE_BYTES * 2 / sizeof(uint16_t))
+static uint16_t dma_buffer[DMA_BUFFER_SIZE];
+
+#define CHUNK_SIZE (FRAME_SIZE_BYTES / sizeof(uint16_t) / 2)
+#define BUFFER_CAPACITY 10
+AudioBuffer<CHUNK_SIZE, BUFFER_CAPACITY> audioBuffer;
 
 void
 I2sDriver_Start(void)
 {
     __HAL_RCC_DMA1_CLK_ENABLE();
-    HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
 
     __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -60,9 +67,6 @@ I2sDriver_Start(void)
 
     __HAL_LINKDMA(&hi2s1, hdmarx, hdma_spi1_rx);
 
-    HAL_NVIC_SetPriority(SPI1_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(SPI1_IRQn);
-
     hi2s1.Instance = SPI1;
     hi2s1.Init.Mode = I2S_MODE_SLAVE_RX;
     hi2s1.Init.Standard = I2S_STANDARD_PHILIPS;
@@ -71,13 +75,15 @@ I2sDriver_Start(void)
     hi2s1.Init.AudioFreq = I2S_AUDIOFREQ_48K;
     hi2s1.Init.CPOL = I2S_CPOL_HIGH;
 
+    audioBuffer.clear();
+
     __disable_irq();
     /* TODO: Add timeout */
     while ((GPIOA->IDR & I2S_PIN_WS) == 1);
     while ((GPIOA->IDR & I2S_PIN_WS) == 0);
     /* STM32F072 Errata 2.13.4: Enable I2S when the WS is high */
     HAL_I2S_Init(&hi2s1);
-    HAL_I2S_Receive_DMA(&hi2s1, buffer, AUDIO_BUFFER_SIZE);
+    HAL_I2S_Receive_DMA(&hi2s1, dma_buffer, DMA_BUFFER_SIZE);
     __enable_irq();
 }
 
@@ -87,7 +93,6 @@ I2sDriver_Stop(void)
     HAL_I2S_DMAStop(&hi2s1);
     HAL_I2S_DeInit(&hi2s1);
     __HAL_RCC_SPI1_CLK_DISABLE();
-    HAL_NVIC_DisableIRQ(SPI1_IRQn);
     HAL_DMA_DeInit(hi2s1.hdmarx);
     HAL_GPIO_DeInit(GPIOA, I2S_PIN_WS | I2S_PIN_CK | I2S_PIN_SD);
     HAL_NVIC_DisableIRQ(DMA1_Channel2_3_IRQn);
@@ -100,21 +105,32 @@ DMA1_Channel2_3_IRQHandler(void)
 }
 
 extern "C" void
-SPI1_IRQHandler(void)
-{
-    HAL_I2S_IRQHandler(&hi2s1);
-}
-
-extern "C" void
 HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s)
 {
-    tud_audio_write(buffer, AUDIO_BUFFER_SIZE);
+    audioBuffer.push((uint32_t*)dma_buffer);
 }
 
 extern "C" void
 HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s)
 {
-    tud_audio_write(buffer + (AUDIO_BUFFER_SIZE / 2), AUDIO_BUFFER_SIZE);
+    audioBuffer.push((uint32_t*)(dma_buffer + (DMA_BUFFER_SIZE / 2)));
+}
+
+extern "C" bool
+tud_audio_tx_done_pre_load_cb(uint8_t rhport,
+                              uint8_t itf,
+                              uint8_t ep_in,
+                              uint8_t cur_alt_setting)
+{
+    (void) rhport;
+    (void) itf;
+    (void) ep_in;
+    (void) cur_alt_setting;
+
+    const uint32_t *buffer = audioBuffer.pop();
+    tud_audio_write(buffer, FRAME_SIZE_BYTES);
+
+    return true;
 }
 
 #endif /* ARDUINO_ARCH_STM32 */

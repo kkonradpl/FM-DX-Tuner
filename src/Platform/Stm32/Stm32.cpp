@@ -19,12 +19,15 @@
 #include <stm32f0xx_hal.h>
 #include "../../Comm.hpp"
 
+
 void
 PlatformDriver_Setup(void)
 {
     __HAL_RCC_USB_CLK_ENABLE();
-    HAL_NVIC_SetPriority(USB_IRQn, 2, 0);
+    HAL_NVIC_SetPriority(USB_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(USB_IRQn);
+    HAL_NVIC_SetPriority(PendSV_IRQn, 1, 0);
+    HAL_NVIC_EnableIRQ(PendSV_IRQn);
     tud_init(0);
 }
 
@@ -46,7 +49,7 @@ USB_IRQHandler(void)
     tud_int_handler(0);
 
     /* Continue in a lower priority interrupt */
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+    SCB->ICSR = SCB_ICSR_PENDSVSET_Msk;
 }
 
 /* The PendSV_Handler will take care of the USB
