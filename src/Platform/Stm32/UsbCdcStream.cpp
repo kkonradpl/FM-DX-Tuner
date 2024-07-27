@@ -16,8 +16,9 @@
 
 #ifdef ARDUINO_ARCH_STM32
 #include <Arduino.h>
+#include <tusb.h>
 #include "UsbCdcStream.hpp"
-#include "tusb.h"
+#include "Bootloader.hpp"
 
 #define BUFF_SIZE 64
 uint8_t rxBuff[BUFF_SIZE];
@@ -101,8 +102,8 @@ UsbCdcStream::readTx(void)
     return value;
 }
 
-extern "C"
-void tud_cdc_rx_cb(uint8_t itf)
+extern "C" void
+tud_cdc_rx_cb(uint8_t itf)
 {
     uint8_t value;
     while (tud_cdc_n_available(itf))
@@ -116,6 +117,45 @@ void tud_cdc_rx_cb(uint8_t itf)
     }
 }
 
+extern "C" void
+tud_cdc_line_state_cb(uint8_t itf,
+                      bool    dtr,
+                      bool    rts)
+{
+    constexpr unsigned long timeout = 500;
+    constexpr uint8_t count = 5;
+
+    static unsigned long timer = 0;
+    static uint8_t state = 0;
+
+    if (state == 0)
+    {
+        if (dtr == 1 &&
+            rts == 0)
+        {
+            state = 1;
+            timer = millis();
+        }
+        return;
+    }
+
+    if ((millis() - timer) > timeout)
+    {
+        state = 0;
+        return;
+    }
+
+    if ((dtr == 1 && rts == 0 && state % 2 == 0) ||
+        (dtr == 0 && rts == 1 && state % 2 == 1))
+    {
+        state++;
+    }
+
+    if (state == count)
+    {
+        Platform_Stm32_Bootloader();
+    }
+}
 
 UsbCdcStream UsbCdcSerial;
 
