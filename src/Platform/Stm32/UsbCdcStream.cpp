@@ -139,7 +139,8 @@ tud_cdc_line_state_cb(uint8_t itf,
         return;
     }
 
-    if ((millis() - timer) > timeout)
+    if ((millis() - timer) > timeout ||
+        dtr ^ rts == 0)
     {
         state = 0;
         return;
