@@ -274,13 +274,38 @@ TEF668X::setBandwidth(uint32_t value)
         return false;
     }
     
-    const uint8_t module = (this->mode == MODE_FM) ? MODULE_FM : MODULE_AM;
-    const uint8_t command = (this->mode == MODE_FM) ? FM_Set_Bandwidth : AM_Set_Bandwidth;
+    const uint16_t *table = (this->mode == MODE_FM) ? LITHIO_BANDWIDTH_FM : LITHIO_BANDWIDTH_AM;
+    const uint16_t bandwidth = Bandwidth::lookup(table, value / 1000, NULL);
+    const uint16_t controlSensitivity = 100;
+    const uint16_t lowLevelSensitivity = 100;
+
     const uint16_t mode = (this->mode == MODE_FM && value == 0) ? 1 : 0;
 
-    const uint16_t *table = (this->mode == MODE_FM) ? LITHIO_BANDWIDTH_FM : LITHIO_BANDWIDTH_AM;
-    uint16_t bandwidth = Bandwidth::lookup(table, value / 1000, NULL);
-    i2c.write(module, command, 4, mode, bandwidth * 10, 1000, 1000);
+    if (this->mode == MODE_AM)
+    {
+        const uint16_t mode = 0;
+        i2c.write(MODULE_AM, AM_Set_Bandwidth, 4,
+                  mode,
+                  bandwidth * 10,
+                  controlSensitivity * 10,
+                  lowLevelSensitivity * 10);
+    }
+    else if (this->mode == MODE_FM)
+    {
+        const uint16_t mode = (value == 0) ? 1 : 0;
+        const uint16_t minBandwidth = 56;
+        const uint16_t nominalBandwidth = 236;
+        const uint16_t controlAttack = 300;
+
+        i2c.write(MODULE_FM, FM_Set_Bandwidth, 7,
+                  mode,
+                  bandwidth * 10,
+                  controlSensitivity * 10,
+                  lowLevelSensitivity * 10,
+                  minBandwidth * 10,
+                  nominalBandwidth * 10,
+                  controlAttack);
+    }
 
     this->bandwidth = (mode == 0 ? (uint32_t)bandwidth * 1000 : 0);
     return true;

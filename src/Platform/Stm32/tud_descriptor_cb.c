@@ -17,6 +17,7 @@
 #ifdef ARDUINO_ARCH_STM32
 #include <tusb.h>
 #include "SerialNumber.h"
+#include "../../Version.hpp"
 
 enum
 {
@@ -60,6 +61,9 @@ static char* const strings[] =
                           CFG_TUD_AUDIO * FMDX_AUDIO_DESC_LEN + \
                           CFG_TUD_CDC * TUD_CDC_DESC_LEN)
 
+#define BCD_CONVERT(x) ((x) / 10 * 16 + (x) % 10)
+#define BCD_VERSION (BCD_CONVERT(FMDX_TUNER_VERSION_MAJOR) << 8) | \
+                    (BCD_CONVERT(FMDX_TUNER_VERSION_MINOR))
 
 uint8_t const*
 tud_descriptor_device_cb(void)
@@ -77,7 +81,7 @@ tud_descriptor_device_cb(void)
 
         .idVendor           = 0x1234,
         .idProduct          = 0x6687,
-        .bcdDevice          = 0x0100,
+        .bcdDevice          = BCD_VERSION,
 
         .iManufacturer      = 0x01,
         .iProduct           = 0x02,
