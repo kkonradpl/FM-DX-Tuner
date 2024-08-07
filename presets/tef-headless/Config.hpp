@@ -20,7 +20,7 @@
 #define TUNER_AVR_PULLUP false
 
 /* Legacy RDS message (R) in the communication protocol */
-/* Keep enabled for pre-v1.2 XDR-GTK compability. New message additionaly
+/* Keep enabled for pre-v1.2 XDR-GTK compatibility. New message additionally
    contains the first block (PI code), which is useful for direct
    passthrough to RDS Spy. When using the legacy message, the first block
    is reconstructed from the buffered PI code message (P) for RDS Spy. */
@@ -32,6 +32,13 @@
    Audio configuration
    ----------------------------------------------------------------------- */
 #define AUDIO_I2S_ENABLED true
+/* ----------------------------------------------------------------------- */
+
+
+/* -----------------------------------------------------------------------
+   STM32 configuration
+   ----------------------------------------------------------------------- */
+#define STM32_USE_INTERNAL_CLOCK false
 /* ----------------------------------------------------------------------- */
 
 

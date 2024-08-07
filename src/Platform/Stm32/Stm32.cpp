@@ -18,6 +18,7 @@
 #include <tusb.h>
 #include <stm32f0xx_hal.h>
 #include "../../Comm.hpp"
+#include "../../../Config.hpp"
 
 
 void
@@ -74,6 +75,61 @@ PendSV_Handler(void)
 
         tud_task_ext(0, true);
     }
+}
+
+extern "C" void
+SystemClock_Config(void)
+{
+    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+    RCC_OscInitStruct.OscillatorType = (STM32_USE_INTERNAL_CLOCK ? RCC_OSCILLATORTYPE_HSI : RCC_OSCILLATORTYPE_HSE);
+#if STM32_USE_INTERNAL_CLOCK
+    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    RCC_OscInitStruct.HSICalibrationValue  = RCC_HSICALIBRATION_DEFAULT;
+#else
+    RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+#endif
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = (STM32_USE_INTERNAL_CLOCK ? RCC_PLLSOURCE_HSI : RCC_PLLSOURCE_HSE);
+    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL6;
+    RCC_OscInitStruct.PLL.PREDIV = RCC_PREDIV_DIV1;
+
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB;
+    PeriphClkInit.UsbClockSelection = (STM32_USE_INTERNAL_CLOCK ? RCC_USBCLKSOURCE_HSI48 : RCC_USBCLKSOURCE_PLL);
+
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+#if STM32_USE_INTERNAL_CLOCK
+    RCC_CRSInitTypeDef RCC_CRSInitStruct = {0};
+    RCC_CRSInitStruct.Prescaler = RCC_CRS_SYNC_DIV1;
+    RCC_CRSInitStruct.Source = RCC_CRS_SYNC_SOURCE_USB;
+    RCC_CRSInitStruct.Polarity = RCC_CRS_SYNC_POLARITY_RISING;
+    RCC_CRSInitStruct.ReloadValue =  RCC_CRS_RELOADVALUE_DEFAULT;
+    RCC_CRSInitStruct.ErrorLimitValue = RCC_CRS_ERRORLIMIT_DEFAULT;
+    RCC_CRSInitStruct.HSI48CalibrationValue = RCC_CRS_HSI48CALIBRATION_DEFAULT;
+
+    __HAL_RCC_CRS_CLK_ENABLE();
+    HAL_RCCEx_CRSConfig(&RCC_CRSInitStruct);
+#endif
 }
 
 #endif /* ARDUINO_ARCH_STM32 */
