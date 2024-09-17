@@ -79,7 +79,7 @@ tud_descriptor_device_cb(void)
         .bDeviceProtocol    = MISC_PROTOCOL_IAD,
         .bMaxPacketSize0    = CFG_TUD_ENDPOINT0_SIZE,
 
-        .idVendor           = 0x1234,
+        .idVendor           = 0x1209,
         .idProduct          = 0x6687,
         .bcdDevice          = BCD_VERSION,
 
