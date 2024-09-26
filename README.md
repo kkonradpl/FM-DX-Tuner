@@ -68,10 +68,10 @@ If your tuner module does not have the 3.3V I2C pull-ups (SDA/A4 and
 SCL/A5 is almost 0V), then you need to solder 10 kΩ resistors: one
 between 3.3V and SDA (A4), and another one between 3.3V and SCL (A5).
 
-# Donations
+# TEF668X Headless USB Tuner (STM32)
 
-This is an open-source project which is free. If you like it,
-you can consider buying me a coffee.
+Firmware dependencies:
+- Board: STM32 MCU Based Boards ([STM32duino](https://github.com/stm32duino)) - download using board manager
+- Library: [TinyUSB](https://github.com/hathach/tinyusb) - install manually to the Arduino libraries
 
-<a href="https://www.buymeacoffee.com/kkonradpl"><img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=%E2%98%95&slug=kkonradpl&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
-
+During first firmware flashing, short BOOT to 3.3V, plug the USB cable and flash using Arduino IDE (DFU method). Once the firmware is running, it is not necessary to manually short BOOT pin. See [tef-bootloader](https://github.com/kkonradpl/tef-bootloader).
