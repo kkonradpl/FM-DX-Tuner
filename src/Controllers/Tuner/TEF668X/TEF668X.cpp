@@ -15,6 +15,12 @@
  */
 
 #include <Arduino.h>
+#ifdef ARDUINO_ARCH_AVR
+#include <avr/pgmspace.h>
+#else
+#include <pgmspace.h>
+#endif
+
 #include "../../../Comm.hpp"
 #include "TEF668X.hpp"
 #include "Lithio.hpp"
@@ -370,7 +376,9 @@ TEF668X::setAlignment(uint32_t value)
 bool
 TEF668X::setVolume(uint8_t value)
 {
-    int16_t volume = map(value, 0, 100, -600, 0);
+    /* Tuner class ensures that value is always between 0 and 100 */
+    int16_t volume = pgm_read_word_near(LITHIO_VOLUME + value);
+
     i2c.write(MODULE_AUDIO, AUDIO_Set_Volume, 1, volume);
     return true;
 }
