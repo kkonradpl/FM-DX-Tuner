@@ -65,6 +65,8 @@ static char* const strings[] =
 #define BCD_VERSION (BCD_CONVERT(FMDX_TUNER_VERSION_MAJOR) << 8) | \
                     (BCD_CONVERT(FMDX_TUNER_VERSION_MINOR))
 
+#define MAX_STRING_LEN 32
+
 uint8_t const*
 tud_descriptor_device_cb(void)
 {
@@ -133,7 +135,7 @@ tud_descriptor_string_cb(uint8_t  index,
         return NULL;
     }
 
-    static uint16_t buffer[32 + 1];
+    static uint16_t buffer[MAX_STRING_LEN + 1];
     size_t length;
 
     switch (index)
@@ -149,9 +151,9 @@ tud_descriptor_string_cb(uint8_t  index,
 
     default:
         const char *string = strings[index];
-        const size_t maxLength = sizeof(buffer) / sizeof(buffer[0]) - 1;
-        if (length > maxLength)
-            length = maxLength;
+        length = strlen(string);
+        if (length > MAX_STRING_LEN)
+            length = MAX_STRING_LEN;
 
         for (size_t i = 0; i < length; i++)
         {
