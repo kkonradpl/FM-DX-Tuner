@@ -16,17 +16,14 @@
 
 #ifndef FMDX_TUNER_COMM_H
 #define FMDX_TUNER_COMM_H
-
-#ifdef ARDUINO_ARCH_STM32
 #include "../Config.hpp"
 
-#if STM32_USB_ENABLED
+#if defined(ARDUINO_ARCH_STM32) && STM32_USB_ENABLED
 #include "Platform/Stm32/UsbCdcStream.hpp"
 #define Comm UsbCdcSerial
 #else
 #define Comm Serial
-#endif /* STM32_USB_ENABLED */
 
-#endif /* ARDUINO_ARCH_STM32 */
+#endif /* defined(ARDUINO_ARCH_STM32) && STM32_USB_ENABLED */
 
 #endif /* FMDX_TUNER_COMM_H */
