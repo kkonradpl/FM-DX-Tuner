@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023-2024  Konrad Kosmatka
+ *  Copyright (C) 2023-2025  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -279,26 +279,21 @@ TEF668X::setBandwidth(uint32_t value)
     {
         return false;
     }
-    
+
     const uint16_t *table = (this->mode == MODE_FM) ? LITHIO_BANDWIDTH_FM : LITHIO_BANDWIDTH_AM;
     const uint16_t bandwidth = Bandwidth::lookup(table, value / 1000, NULL);
-    const uint16_t controlSensitivity = 100;
-    const uint16_t lowLevelSensitivity = 100;
-
     const uint16_t mode = (this->mode == MODE_FM && value == 0) ? 1 : 0;
 
     if (this->mode == MODE_AM)
     {
-        const uint16_t mode = 0;
-        i2c.write(MODULE_AM, AM_Set_Bandwidth, 4,
+        i2c.write(MODULE_AM, AM_Set_Bandwidth, 2,
                   mode,
-                  bandwidth * 10,
-                  controlSensitivity * 10,
-                  lowLevelSensitivity * 10);
+                  bandwidth * 10);
     }
     else if (this->mode == MODE_FM)
     {
-        const uint16_t mode = (value == 0) ? 1 : 0;
+        const uint16_t controlSensitivity = 100;
+        const uint16_t lowLevelSensitivity = 100;
         const uint16_t minBandwidth = 56;
         const uint16_t nominalBandwidth = 236;
         const uint16_t controlAttack = 300;
