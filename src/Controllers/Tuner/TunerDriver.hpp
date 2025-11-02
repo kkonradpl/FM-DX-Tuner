@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023  Konrad Kosmatka 
+ *  Copyright (C) 2023-2025  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -70,6 +70,7 @@ public:
     uint32_t getFrequency();
     uint32_t getStep();
     uint32_t getBandwidth();
+    uint32_t getAlignment();
 
     RdsGroupBuffer rdsBuffer;
     RdsPiBuffer piBuffer;
@@ -79,6 +80,7 @@ protected:
     uint32_t frequency = 0;
     uint32_t step = 0;
     uint32_t bandwidth = 0;
+    uint32_t alignment = 0;
 };
 
 #endif

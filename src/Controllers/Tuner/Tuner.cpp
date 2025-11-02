@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023-2024  Konrad Kosmatka
+ *  Copyright (C) 2023-2025  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -264,7 +264,7 @@ Tuner::cbMode(Controller *instance,
 
         return true;
     }
-    
+
     return false;
 }
 
@@ -295,6 +295,9 @@ Tuner::cbFrequency(Controller *instance,
         }
 
         tuner->feedback2(FMDX_TUNER_PROTOCOL_TUNE, newFrequency, step);
+
+        const uint32_t newAlignment = tuner->driver.getAlignment();
+        tuner->feedback(FMDX_TUNER_PROTOCOL_ALIGNMENT, newAlignment);
         return true;
     }
 
@@ -345,7 +348,7 @@ Tuner::cbAlignment(Controller *instance,
 
     if (tuner->driver.setAlignment(value))
     {
-        tuner->feedback(FMDX_TUNER_PROTOCOL_ALIGNMENT, value);
+        tuner->feedback(FMDX_TUNER_PROTOCOL_ALIGNMENT, tuner->driver.getAlignment());
         return true;
     }
 

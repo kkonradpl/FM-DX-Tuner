@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023-2024  Konrad Kosmatka
+ *  Copyright (C) 2023-2025  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -123,7 +123,9 @@ SAF7730::setFrequency(uint32_t  value,
     }
 
     uint8_t band = tef6730.getBand();
-    tef6730.setAlignment(Alignment::get(newFrequency));
+    const uint8_t newAlignment = Alignment::get(newFrequency);
+    this->alignment = newAlignment;
+    tef6730.setAlignment(newAlignment);
     tef6730.tune();
 
     const bool bandChanged = band != tef6730.getBand();
@@ -215,6 +217,7 @@ SAF7730::setAlignment(uint32_t value)
 {
     if (value <= 0x7F)
     {
+        this->alignment = value;
         tef6730.setAlignment(value);
         tef6730.tune();
         return true;

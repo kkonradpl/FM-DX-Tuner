@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2023  Konrad Kosmatka 
+ *  Copyright (C) 2023-2025  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -39,4 +39,10 @@ uint32_t
 TunerDriver::getBandwidth()
 {
     return this->bandwidth;
+}
+
+uint32_t
+TunerDriver::getAlignment()
+{
+    return this->alignment;
 }
