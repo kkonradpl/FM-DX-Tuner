@@ -258,17 +258,23 @@ TEF668X::setFrequency(uint32_t  value,
         value <= this->maxVhfFreq)
     {
         this->setFrequencyFM(value, flags);
-        return true;
     }
-
-    if (value >= this->minHfFreq &&
-        value <= this->maxHfFreq)
+    else if (value >= this->minHfFreq &&
+             value <= this->maxHfFreq)
     {
         this->setFrequencyAM(value, flags);
-        return true;
+    }
+    else
+    {
+        return false;
     }
 
-    return false;
+    if (this->alignment != 0)
+    {
+        this->setAlignment(0);
+    }
+
+    return true;
 }
 
 bool
@@ -365,6 +371,22 @@ TEF668X::setAgc(uint32_t value)
 bool
 TEF668X::setAlignment(uint32_t value)
 {
+    /* 6 dB steps, max attenuation is 36 dB */
+    value = ((value + 3) / 6) * 6;
+    const uint32_t limit = 36;
+    this->alignment = min(value, limit);
+
+    if (this->mode == MODE_FM)
+    {
+        i2c.write(MODULE_FM, FM_Set_Antenna, 2, (uint16_t)this->alignment * 10, 420);
+        return true;
+    }
+    else if (this->mode == MODE_AM)
+    {
+        i2c.write(MODULE_AM, AM_Set_Antenna, 1, (uint16_t)this->alignment * 10);
+        return true;
+    }
+
     return false;
 }
 
