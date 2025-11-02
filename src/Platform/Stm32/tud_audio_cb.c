@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2024  Konrad Kosmatka
+ *  Copyright (C) 2024-2025  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -15,6 +15,10 @@
  */
 
 #ifdef ARDUINO_ARCH_STM32
+#include <stdbool.h>
+#include "../../../Config.hpp"
+
+#if STM32_USB_ENABLED
 #include <tusb.h>
 
 /* CFG_TUD_AUDIO_FUNC_1_N_CHANNELS_TX + 1 for master channel */
@@ -151,5 +155,7 @@ tud_audio_get_req_entity_cb(uint8_t                       rhport,
         return false;
     }
 }
+
+#endif /* STM32_USB_ENABLED */
 
 #endif /* ARDUINO_ARCH_STM32 */

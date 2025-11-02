@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2024  Konrad Kosmatka
+ *  Copyright (C) 2024-2025  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -18,10 +18,15 @@
 #define FMDX_TUNER_COMM_H
 
 #ifdef ARDUINO_ARCH_STM32
+#include "../Config.hpp"
+
+#if STM32_USB_ENABLED
 #include "Platform/Stm32/UsbCdcStream.hpp"
 #define Comm UsbCdcSerial
 #else
 #define Comm Serial
-#endif
+#endif /* STM32_USB_ENABLED */
 
-#endif
+#endif /* ARDUINO_ARCH_STM32 */
+
+#endif /* FMDX_TUNER_COMM_H */

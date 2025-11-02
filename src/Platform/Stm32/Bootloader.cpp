@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2024  Konrad Kosmatka
+ *  Copyright (C) 2024-2025  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -15,13 +15,19 @@
  */
 
 #ifdef ARDUINO_ARCH_STM32
-#include <tusb.h>
+#include "../../../Config.hpp"
 #include <stm32f0xx_hal.h>
+
+#if STM32_USB_ENABLED
+#include <tusb.h>
+#endif
 
 void
 Platform_Stm32_Bootloader(void)
 {
+#if STM32_USB_ENABLED
     tud_disconnect();
+#endif
 
     HAL_NVIC_DisableIRQ(PendSV_IRQn);
     HAL_NVIC_DisableIRQ(USB_IRQn);

@@ -1,7 +1,7 @@
 /*  SPDX-License-Identifier: GPL-3.0-or-later
  *
  *  FM-DX Tuner
- *  Copyright (C) 2024  Konrad Kosmatka
+ *  Copyright (C) 2024-2025  Konrad Kosmatka
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -15,12 +15,13 @@
  */
 
 #ifdef ARDUINO_ARCH_STM32
-#include <tusb.h>
+#include <Arduino.h>
 #include <stm32f0xx_hal.h>
-#include "../../Comm.hpp"
 #include "../../../Config.hpp"
+#include "../../Comm.hpp"
 
-
+#if STM32_USB_ENABLED
+#include <tusb.h>
 void
 PlatformDriver_Setup(void)
 {
@@ -31,6 +32,7 @@ PlatformDriver_Setup(void)
     HAL_NVIC_EnableIRQ(PendSV_IRQn);
     tud_init(0);
 }
+#endif /* STM32_USB_ENABLED */
 
 void
 PlatformDriver_PostSetup(void)
@@ -42,6 +44,7 @@ PlatformDriver_PostSetup(void)
     GPIOD->OSPEEDR = 0;
 }
 
+#if STM32_USB_ENABLED
 /* The USB_IRQHandler will take care of the 1ms isochronous
    interrupt for UAC2 audio and incoming CDC data (RX) */
 extern "C" void
@@ -76,6 +79,7 @@ PendSV_Handler(void)
         tud_task_ext(0, true);
     }
 }
+#endif /* STM32_USB_ENABLED */
 
 extern "C" void
 SystemClock_Config(void)
@@ -109,6 +113,7 @@ SystemClock_Config(void)
         Error_Handler();
     }
 
+#if STM32_USB_ENABLED
     RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
     PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB;
     PeriphClkInit.UsbClockSelection = (STM32_USE_INTERNAL_CLOCK ? RCC_USBCLKSOURCE_HSI48 : RCC_USBCLKSOURCE_PLL);
@@ -129,7 +134,8 @@ SystemClock_Config(void)
 
     __HAL_RCC_CRS_CLK_ENABLE();
     HAL_RCCEx_CRSConfig(&RCC_CRSInitStruct);
-#endif
+#endif /* STM32_USE_INTERNAL_CLOCK */
+#endif /* STM32_USB_ENABLED */
 }
 
 #endif /* ARDUINO_ARCH_STM32 */
