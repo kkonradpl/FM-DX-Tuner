@@ -165,6 +165,7 @@ TEF668X::resetQuality()
 {
     this->rssi.reset();
     this->cci.reset();
+    this->bw.reset();
 }
 
 void
@@ -499,8 +500,19 @@ TEF668X::getQualityCci(QualityMode mode)
 int16_t
 TEF668X::getQualityAci(QualityMode mode)
 {
-    /* USN detector is unreliable for ACI meter */
-    return -1;
+    if (this->mode != MODE_FM ||
+        !this->bw.isAvailable() ||
+        this->bandwidth != 0)
+    {
+        return -1;
+    }
+
+    constexpr int16_t bwMin = 56;
+    constexpr int16_t bwMax = 236;
+    constexpr int16_t aciMin = 0;
+    constexpr int16_t aciMax = 100;
+
+    return map(constrain(this->bw.getAvg(), bwMin, bwMax), bwMax, bwMin, aciMin, aciMax);
 }
 
 int16_t
@@ -632,7 +644,7 @@ TEF668X::readQuality()
              (this->mode == MODE_FM ? FM_Get_Quality_Status : AM_Get_Quality_Status),
              sizeof(QualityData) / sizeof(uint16_t),
              (uint16_t*)&data);
-    
+
     if (data.status == 0xFFFA)
     {
         /* Invalid state */
@@ -647,6 +659,7 @@ TEF668X::readQuality()
     {
         this->rssi.add(data.level * 10);
         this->cci.add(data.coChannel);
+        this->bw.add(data.bandwidth / 10);
     }
 }
 
