@@ -18,7 +18,7 @@
 #define FMDX_TUNER_TEF668X_H
 
 #include "../TunerDriver.hpp"
-#include "../AvgData.hpp"
+#include "../../../Utils/RingBuffer.hpp"
 #include "../../../Utils/Timer.hpp"
 #include "../../../../Config.hpp"
 #include "Lithio.hpp"
@@ -81,9 +81,9 @@ private:
 
     static constexpr Timer::Interval rdsInterval = 87 / 2;
     static constexpr Timer::Interval qualityInterval = (TUNER_I2C_CLOCK >= 200000L) ? 2 : 4;
-    AvgData<int16_t, int32_t, uint8_t, 100 / qualityInterval> rssi;
-    AvgData<uint16_t, uint32_t, uint8_t, 300 / qualityInterval> cci;
-    AvgData<uint16_t, uint16_t, uint8_t, 300 / qualityInterval> bw;
+    RingBuffer<int16_t, int32_t, 100 / qualityInterval> rssi;
+    RingBuffer<uint16_t, uint32_t, 300 / qualityInterval> cci;
+    RingBuffer<uint16_t, uint16_t, 300 / qualityInterval> bw;
 
     Timer timerQuality;
 #if TUNER_TEF668X_RDS_DAVN == false

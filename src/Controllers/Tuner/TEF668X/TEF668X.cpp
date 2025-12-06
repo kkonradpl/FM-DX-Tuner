@@ -469,7 +469,7 @@ TEF668X::getQualityRssi(QualityMode mode)
     }
 
     const bool fast = (mode == TunerDriver::QUALITY_FAST);
-    const int16_t value = fast ? this->rssi.getRaw() : this->rssi.getAvg();
+    const int16_t value = fast ? this->rssi.getLast() : this->rssi.getAvg();
 
     /* [dBf] = [dBµV] - 10 * log10(75) + 30
        [dBf] = [dBµV] + 11.25
@@ -493,7 +493,7 @@ TEF668X::getQualityCci(QualityMode mode)
     constexpr int16_t cciMax = 100;
 
     const bool fast = (mode == TunerDriver::QUALITY_FAST);
-    const int16_t value = fast ? this->cci.getRaw() : this->cci.getAvg();
+    const int16_t value = fast ? this->cci.getLast() : this->cci.getAvg();
     return map(constrain(value, wamMin, wamMax), wamMin, wamMax, cciMin, cciMax);
 }
 

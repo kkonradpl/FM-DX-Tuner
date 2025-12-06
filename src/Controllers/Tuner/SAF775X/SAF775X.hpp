@@ -19,7 +19,7 @@
 
 #include "Dirana3.hpp"
 #include "../TunerDriver.hpp"
-#include "../AvgData.hpp"
+#include "../../../Utils/RingBuffer.hpp"
 #include "../../../Utils/Timer.hpp"
 #include "I2cDirana3.hpp"
 
@@ -65,8 +65,8 @@ private:
 
     static constexpr Timer::Interval rdsInterval = 87 / 2;
     static constexpr Timer::Interval qualityInterval = 4;
-    AvgData<int16_t, int32_t, uint8_t, 100 / qualityInterval> rssi;
-    AvgData<uint8_t, uint32_t, uint8_t, 300 / qualityInterval> cci;
+    RingBuffer<int16_t, int32_t, 100 / qualityInterval> rssi;
+    RingBuffer<uint8_t, uint32_t, 300 / qualityInterval> cci;
     bool pilot = false;
 
     Timer timerQuality;

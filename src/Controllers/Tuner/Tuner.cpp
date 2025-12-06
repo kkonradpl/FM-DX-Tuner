@@ -80,7 +80,7 @@ Tuner::getCommands(uint8_t *len)
         { FMDX_TUNER_PROTOCOL_SCAN, &this->cbScan },
         { FMDX_TUNER_PROTOCOL_CUSTOM, &this->cbCustom }
     };
-    
+
     *len = sizeof(commands) / sizeof(Command);
     return commands;
 }
@@ -140,6 +140,7 @@ Tuner::handleQuality()
     const auto rssi = this->driver.getQualityRssi(this->qualityMode);
     const auto cci = this->driver.getQualityCci(this->qualityMode);
     const auto aci = this->driver.getQualityAci(this->qualityMode);
+    const auto bw = this->driver.getQualityBandwidth(this->qualityMode);
 
     Comm.print('S');
 
@@ -158,6 +159,8 @@ Tuner::handleQuality()
     Comm.print(cci, DEC);
     Comm.print(',');
     Comm.print(aci, DEC);
+    Comm.print(',');
+    Comm.print(bw, DEC);
     Comm.print('\n');
 }
 
