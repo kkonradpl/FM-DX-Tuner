@@ -36,6 +36,12 @@
 
 /* AM signal level offset for calibration */
 #define TUNER_TEF668X_AM_LEVEL_OFFSET 0
+
+/* Audio volume gain in decibels
+   Defaults to +5.0 dB, which results in:
+   −3 dBFS (I2S) at ±75 kHz deviation (de-emphasis disabled)
+    0 dBFS (I2S) at ±100 kHz deviation (de-emphasis disabled) */
+#define TUNER_TEF668X_VOLUME_GAIN 5.0
 /* ----------------------------------------------------------------------- */
 
 #endif

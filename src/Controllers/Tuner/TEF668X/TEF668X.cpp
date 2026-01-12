@@ -394,8 +394,15 @@ TEF668X::setAlignment(uint32_t value)
 bool
 TEF668X::setVolume(uint8_t value)
 {
-    /* Tuner class ensures that value is always between 0 and 100 */
-    int16_t volume = pgm_read_word_near(LITHIO_VOLUME + value);
+    int16_t volume = map(value, 0, 100, -600, 0);
+
+    if (value != 0)
+    {
+        constexpr int16_t gain =
+            static_cast<int16_t>(TUNER_TEF668X_VOLUME_GAIN * 10.0f +
+                                (TUNER_TEF668X_VOLUME_GAIN >= 0 ? 0.5f : -0.5f));
+        volume += gain;
+    }
 
     i2c.write(MODULE_AUDIO, AUDIO_Set_Volume, 1, volume);
     return true;
