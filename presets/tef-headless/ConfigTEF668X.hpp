@@ -32,7 +32,7 @@
 #define TUNER_TEF668X_PATCH_V205 1
 
 /* FM signal level offset for calibration */
-#define TUNER_TEF668X_FM_LEVEL_OFFSET -7.0
+#define TUNER_TEF668X_FM_LEVEL_OFFSET -7.5
 
 /* AM signal level offset for calibration */
 #define TUNER_TEF668X_AM_LEVEL_OFFSET 0
